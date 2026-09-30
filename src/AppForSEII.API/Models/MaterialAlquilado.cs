@@ -15,4 +15,6 @@ public class MaterialAlquilado
     [System.ComponentModel.DataAnnotations.Display(Name = "Price For Renting whith cuantity")]
     [Precision(5, 2)]
     public int Precio {get; set; }
-}
+
+    public Alquiler {get; set; }//Para relación con Alquiler
+}   
