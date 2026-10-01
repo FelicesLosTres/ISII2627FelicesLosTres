@@ -12,6 +12,11 @@ public class TipoDeporte
 [Key]
 public int Id { get; set; }
 
+//Atributos del CU 4
+[StringLength(250)]
+public string? Descripcion { get; set; }
+
+
 [Required(ErrorMessage = "El nombre del deporte es obligatorio.")]
 [StringLength(50, MinimumLength = 3,
 ErrorMessage = "El nombre debe tener entre 3 y 50 caracteres.")]
