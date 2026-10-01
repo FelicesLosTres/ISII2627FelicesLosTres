@@ -24,8 +24,7 @@ ErrorMessage = "El método de pago no puede superar los 30 caracteres.")]
 public string MetodoPago { get; set; }
 
 [Required(ErrorMessage = "Los datos de pago son obligatorios.")]
-[StringLength(100,
-ErrorMessage = "Los datos de pago no pueden superar los 100 caracteres.")]
+[StringLength(100, ErrorMessage = "Los datos de pago no pueden superar los 100 caracteres.")]
 public string DatosPago { get; set; }
 
 
@@ -37,18 +36,12 @@ public Reserva()
 }
 
 // Constructor simple
-public Reserva(
-DateTime fechaReserva,
-decimal precioTotal,
-string metodoPago,
-string DatosPago
-)
+public Reserva( DateTime fechaReserva, decimal precioTotal, string metodoPago, string datosPago)
 {
 FechaReserva = fechaReserva;
 PrecioTotal = precioTotal;
 MetodoPago = metodoPago;
 DatosPago = datosPago;
-
 }
 }
 }
