@@ -14,14 +14,15 @@ string id,
 string name,
 string surname,
 string dni,
-string userName)
+string sex,
+int age,)
 {
 Id = id;
 Name = name;
 Surname = surname;
+Sex = sex;
+Age = age;
 DNI = dni;
-UserName = userName;
-Email = userName;
 }
 
 [Required]
