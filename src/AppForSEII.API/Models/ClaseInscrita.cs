@@ -15,7 +15,7 @@ namespace AppForSEII.API.Models
         [Range(1, 3)]
         public int PlazasReservadas { get; set; }
 
-        [DataType(DataType.Currency)]
+        [System.ComponentModel.DataAnnotations.DataType(System.ComponentModel.DataAnnotations.DataType.Currency)]
         [Column(TypeName = "decimal(18,2)")]
         public decimal Precio { get; set; }
 
