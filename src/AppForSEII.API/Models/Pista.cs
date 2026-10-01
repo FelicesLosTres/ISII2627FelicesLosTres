@@ -40,7 +40,7 @@ public Pista(
 string nombrePista,
 int nPersonas,
 decimal precio,
-int stock,
+int stock
 )
 {
 NombrePista = nombrePista;
