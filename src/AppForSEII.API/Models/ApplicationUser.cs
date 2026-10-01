@@ -14,13 +14,11 @@ string id,
 string name,
 string surname,
 string dni,
-string sex,
 int age)
 {
 Id = id;
 Name = name;
 Surname = surname;
-Sex = sex;
 Age = age;
 DNI = dni;
 }
@@ -38,7 +36,7 @@ public string Surname { get; set; } = string.Empty;
 public string DNI { get; set; } = string.Empty;
 
 [Required]
-public string Sex { get; set; } = string.Empty;
+public string Sex { get; set; } = "No especificado";
 
 [Range(0, 120)]
 public int Age { get; set; }
