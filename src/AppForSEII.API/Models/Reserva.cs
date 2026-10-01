@@ -41,7 +41,7 @@ public Reserva(
 DateTime fechaReserva,
 decimal precioTotal,
 string metodoPago,
-string datosPago
+string DatosPago
 )
 {
 FechaReserva = fechaReserva;
