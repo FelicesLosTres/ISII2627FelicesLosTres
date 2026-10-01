@@ -1,3 +1,4 @@
+
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -21,27 +22,25 @@ public decimal PrecioTotal { get; set; }
 [Required(ErrorMessage = "El método de pago es obligatorio.")]
 [StringLength(30,
 ErrorMessage = "El método de pago no puede superar los 30 caracteres.")]
-public string MetodoPago { get; set; }
-
-[Required(ErrorMessage = "Los datos de pago son obligatorios.")]
-[StringLength(100, ErrorMessage = "Los datos de pago no pueden superar los 100 caracteres.")]
-public string DatosPago { get; set; }
+public string MetodoPago { get; set; } = string.Empty;
 
 
 
 // Constructor vacío
 public Reserva()
 {
-
 }
 
 // Constructor simple
-public Reserva( DateTime fechaReserva, decimal precioTotal, string metodoPago, string datosPago)
+public Reserva(
+DateTime fechaReserva,
+decimal precioTotal,
+string metodoPago)
 {
 FechaReserva = fechaReserva;
 PrecioTotal = precioTotal;
 MetodoPago = metodoPago;
-DatosPago = datosPago;
+
 }
 }
 }
