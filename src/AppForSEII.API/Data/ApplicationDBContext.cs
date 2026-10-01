@@ -17,7 +17,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
 
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
-    public DbSet<Reserva> Reserva { get; set; }
+    public DbSet<Reserva> Reservas { get; set; }
 
 
 
