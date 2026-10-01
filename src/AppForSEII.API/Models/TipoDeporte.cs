@@ -28,8 +28,6 @@ public string? Materiales { get; set; }
 
 public bool Competiciones { get; set; }
 
-// Relación 1:N con Pista
-public IList<Pista> Pistas { get; set; }
 
 // Constructor vacío requerido por EF
 public TipoDeporte()
