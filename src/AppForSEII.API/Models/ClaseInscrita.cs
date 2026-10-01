@@ -36,5 +36,14 @@ namespace AppForSEII.API.Models
         //constructor vacío 
         public ClaseInscrita() { }
 
+        public ClaseInscrita(string? observaciones, int plazasReservadas, decimal precio, int claseDeportivaId, int inscripcionId)
+        {
+            Observaciones = observaciones;
+            PlazasReservadas = plazasReservadas;
+            Precio = precio;
+            ClaseDeportivaId = claseDeportivaId;
+            InscripcionId = inscripcionId;
+        }
+    }
         
 }
