@@ -33,7 +33,6 @@ public bool Competiciones { get; set; }
 public TipoDeporte()
 {
 NombreTipoDeporte = string.Empty;
-Pistas = new List<Pista>();
 }
 
 // Constructor simple
@@ -46,7 +45,6 @@ NombreTipoDeporte = nombreTipoDeporte;
 Materiales = materiales;
 Competiciones = competiciones;
 
-Pistas = new List<Pista>();
 }
 }
 }
