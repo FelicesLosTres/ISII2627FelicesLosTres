@@ -90,7 +90,7 @@ namespace AppForSEII.API.Data {
 
          if (dbContext.Pistas.FirstOrDefault(p => p.NombrePista == "Pista Padel 1") == null)
          {
-         var pista = new Pista("Pista Padel 1", 4, 15, 10);
+         var pista = new Pista("Pista Padel 1", 4, 15, 10, padel.Id);
 
          dbContext.Pistas.Add(pista);
          dbContext.SaveChanges();

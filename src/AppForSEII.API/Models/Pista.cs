@@ -50,13 +50,15 @@ public Pista(
 string nombrePista,
 int nPersonas,
 decimal precio,
-int stock
+int stock,
+int idTipoDeporte
 )
 {
 NombrePista = nombrePista;
 NPersonas = nPersonas;
 Precio = precio;
 Stock = stock;
+IdTipoDeporte = idTipoDeporte;
 
 }
 }
