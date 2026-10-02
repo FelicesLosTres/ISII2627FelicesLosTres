@@ -5,9 +5,8 @@ public class TipoMaterial
     public TipoMaterial()
     {
     }
-    public TipoMaterial(int idTipoMaterial, string nombreTipoMaterial)
+    public TipoMaterial(string nombreTipoMaterial)
     {
-        IdTipoMaterial = idTipoMaterial;
         NombreTipoMaterial = nombreTipoMaterial;
     }
 
