@@ -112,6 +112,49 @@ namespace AppForSEII.API.Data {
 
         //CU2
         //CU3
+        public static void SeedInscripcionCompeticion(ApplicationDbContext dbContext, ApplicationUser user)
+{
+TipoDeporte tenis;
+
+if (dbContext.TiposDeportes.FirstOrDefault(td => td.Nombre == "Tenis") == null)
+{
+tenis = new TipoDeporte("Tenis");
+
+dbContext.TiposDeportes.Add(tenis);
+dbContext.SaveChanges();
+}
+else
+{
+tenis = dbContext.TiposDeportes.First(td => td.Nombre == "Tenis");
+}
+
+if (dbContext.Competiciones.FirstOrDefault(c => c.Nombre == "Torneo Primavera") == null)
+{
+Competicion competicion = new Competicion( DateTime.Today.AddMonths(1), "Torneo Primavera", "Competición de iniciación", 20, tenis.Id);
+
+dbContext.Competiciones.Add(competicion);
+dbContext.SaveChanges();
+}
+
+if (dbContext.Inscripciones.FirstOrDefault(i => i.Id == 1) == null)
+{
+var competicion = dbContext.Competiciones.First();
+
+Inscripcion inscripcion = new Inscripcion(DateTime.Now, MetodoPago.Tarjeta, 20, user);
+
+inscripcion.CompeticionesInscritas.Add(
+new CompeticionInscrita(
+competicion.Id,
+inscripcion.Id,
+"Ningún problema físico"
+)
+);
+
+dbContext.Inscripciones.Add(inscripcion);
+}
+
+dbContext.SaveChanges();
+}
         //CU4
 
 
