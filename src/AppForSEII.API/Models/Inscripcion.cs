@@ -19,20 +19,18 @@ public MetodoPago MetodoPago { get; set; }
 ErrorMessage = "El precio total debe ser mayor que 0.")]
 public decimal PrecioTotal { get; set; }
 
-// Relación N:1 con ApplicationUser
-//[Required]
-//public string ClienteId { get; set; } 
+
 
 // Relación 1:N con ClaseInscrita
 public IList<ClaseInscrita> ClasesInscritas { get; set; }
 
-// Constructor vacío
+
 public Inscripcion()
 {
     
 }
 
-// Constructor simple
+
 public Inscripcion(
 DateTime fechaInscripcion,
 MetodoPago metodoPago,
