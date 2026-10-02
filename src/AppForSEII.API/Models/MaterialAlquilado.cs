@@ -22,7 +22,7 @@ public class MaterialAlquilado
     [StringLength(200, ErrorMessage ="La descripción tiene un máximo de 200 caracteres.")]
     public string? Descripcion {get; set; }
     [Required]
-public int Alquiler { get; set; }
+public int IdAlquiler { get; set; }
 
 [ForeignKey(nameof(IdAlquiler))]
 public Alquiler? Alquiler { get; set; }
