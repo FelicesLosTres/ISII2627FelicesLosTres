@@ -17,6 +17,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
 
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+    public DbSet<TipoDeporte> TiposDeportes { get; set; }
+ 
     public DbSet<Material> Material { get; set; }
     public DbSet<TipoMaterial> TipoMaterial { get; set; }
     public DbSet<MaterialAlquilado> MaterialAlquilado { get; set; }
@@ -28,6 +30,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Competicion> Competiciones { get; set; }
 
     public DbSet<CompeticionInscrita> CompeticionesInscritas { get; set; }
+    public DbSet<Pista> Pistas { get; set; }
+    public DbSet<Reserva> Reservas { get; set; }
    
 
 
