@@ -132,7 +132,7 @@ var clase = dbContext.ClasesDeportivas.First();
 
 var inscripcion = new Inscripcion(DateTime.Now, MetodoPago.Transferencia, 10, user);
 
-inscripcion.ClasesInscritas.Add(new ClaseInscrita(clase.Id, inscripcion.Id, "Sin observaciones", 1, 10));
+inscripcion.ClasesInscritas.Add(new ClaseInscrita(clase.IdClaseDeportiva, inscripcion.Id, "Sin observaciones", 1, 10));
 
 dbContext.Inscripciones.Add(inscripcion);
 }
