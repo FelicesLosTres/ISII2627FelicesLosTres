@@ -3,48 +3,36 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AppForSEII.API.Models
 {
-
-[Index(nameof(NombreTipoDeporte), IsUnique = true)]
-
+[Index(nameof(Nombre), IsUnique = true)]
 public class TipoDeporte
 {
-
 [Key]
 public int Id { get; set; }
 
-//Atributos del CU 4
-[StringLength(250)]
-public string? Descripcion { get; set; }
-
-
 [Required(ErrorMessage = "El nombre del deporte es obligatorio.")]
-[StringLength(50, MinimumLength = 3,
-ErrorMessage = "El nombre debe tener entre 3 y 50 caracteres.")]
-public string NombreTipoDeporte { get; set; }
+[StringLength(50)]
+public string Nombre { get; set; } = string.Empty;
 
-[StringLength(500,
-ErrorMessage = "La descripción no puede superar los 500 caracteres.")]
-public string? Materiales { get; set; }
+// Relación 1:N con Pista
+public IList<Pista> Pistas { get; set; }
 
-public bool Competiciones { get; set; }
+// Relación 1:N con Material
+public IList<Material> Materiales { get; set; }
 
+// Relación 1:N con Competicion
+public IList<Competicion> Competiciones { get; set; }
 
-// Constructor vacío requerido por EF
+// Relación 1:N con ClaseDeportiva
+//public IList<ClaseDeportiva> ClasesDeportivas { get; set; }
+
 public TipoDeporte()
 {
-NombreTipoDeporte = string.Empty;
+
 }
 
-// Constructor simple
-public TipoDeporte(
-string nombreTipoDeporte,
-string? materiales,
-bool competiciones)
+public TipoDeporte(string nombre)
 {
-NombreTipoDeporte = nombreTipoDeporte;
-Materiales = materiales;
-Competiciones = competiciones;
-
+Nombre = nombre;
 }
 }
 }
