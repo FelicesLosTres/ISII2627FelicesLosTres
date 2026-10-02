@@ -33,7 +33,7 @@ public class Material
     public decimal Precio {get; set; }
 
     //Hacer public IList<MaterialAlquilado> MaterialAlquilado {get; set; } FK.
-    public IList<MaterialAlquilado> MaterialesAlquilados {get; set; }//Para rel. con material alquilado.
-    public TipoMaterial {get; set; }//Para rel. con TipoMaterial
-    public TipoDeporte {get; set; }//Para rel. con TipoDeporte
+    //public IList<MaterialAlquilado> MaterialesAlquilados {get; set; }//Para rel. con material alquilado.
+   // public TipoMaterial {get; set; }//Para rel. con TipoMaterial
+   // public TipoDeporte {get; set; }//Para rel. con TipoDeporte
 }
