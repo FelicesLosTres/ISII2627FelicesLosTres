@@ -28,8 +28,7 @@ public int IdReserva { get; set; }
 public Reserva? Reserva { get; set; }
 
 
-[StringLength(250,
-ErrorMessage = "Las observaciones no pueden superar los 250 caracteres.")]
+[StringLength(250, ErrorMessage = "Las observaciones no pueden superar los 250 caracteres.")]
 public string Observaciones { get; set; }
 
 // Constructor vacío
@@ -44,7 +43,6 @@ Cantidad = cantidad;
 Precio = precio;
 IdPista = idPista;
 IdReserva = idReserva;
-
 }
 }
 }
