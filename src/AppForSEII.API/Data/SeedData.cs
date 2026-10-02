@@ -130,7 +130,7 @@ tenis = dbContext.TiposDeportes.First(td => td.Nombre == "Tenis");
 
 if (dbContext.Competiciones.FirstOrDefault(c => c.Nombre == "Torneo Primavera") == null)
 {
-Competicion competicion = new Competicion( DateTime.Today.AddMonths(1), "Torneo Primavera", "Competición de iniciación", 20, tenis.Id);
+Competicion competicion = new Competicion( DateTime.Today.AddMonths(1), "Torneo Primavera", "Competición de iniciación", 20, 10, tenis.Id);
 
 dbContext.Competiciones.Add(competicion);
 dbContext.SaveChanges();
