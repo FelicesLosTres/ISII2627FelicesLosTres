@@ -9,7 +9,7 @@ public class Alquiler
     {
         
     }
-    public Alquiler(  string fechaAlquiler, MetodoPago metodoPago, decimal precioTotal, ApplicationUser applicationUser)
+    public Alquiler(  DateTime fechaAlquiler, MetodoPago metodoPago, decimal precioTotal, ApplicationUser applicationUser)
     {
       
         FechaAlquiler = fechaAlquiler;
@@ -29,8 +29,8 @@ public string UserId { get; set; }
 [ForeignKey(nameof(UserId))]
 public ApplicationUser ApplicationUser { get; set; }
 
-    [DataType(System.ComponentModel.DataAnnotations.DataType.Date)]
-    public string FechaAlquiler {get; set; }
+    [Required(ErrorMessage = "La fecha de la reserva es obligatoria.")]
+    public DateTime FechaAlquiler {get; set; }
 
     [StringLength(40, ErrorMessage ="El campo de método de pago debe estar comprendido entre 1 y 40 caracteres.", MinimumLength=1)]
     public MetodoPago MetodoPago {get; set; }
