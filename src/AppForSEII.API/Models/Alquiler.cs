@@ -9,13 +9,9 @@ public class Alquiler
     {
         
     }
-    public Alquiler(int idAlquiler, string apellidosUsuario, string nombreUsuario, int dNI, int numeroTelefono, string fechaAlquiler, MetodoPago metodoPago, decimal precioTotal, ApplicationUser applicationUser)
+    public Alquiler(  string fechaAlquiler, MetodoPago metodoPago, decimal precioTotal, ApplicationUser applicationUser)
     {
-        IdAlquiler = idAlquiler;
-        ApellidosUsuario = apellidosUsuario;
-        NombreUsuario = nombreUsuario;
-        DNI = dNI;
-        NumeroTelefono = numeroTelefono;
+      
         FechaAlquiler = fechaAlquiler;
         MetodoPago = metodoPago;
         PrecioTotal = precioTotal;
@@ -26,21 +22,12 @@ public class Alquiler
     [RegularExpression (@"^\d{10}$", ErrorMessage ="Id de Alquiler tiene una logitid de 10.")]
     public int IdAlquiler {get; set; }
 
-    public ApplicationUser ApplicationUser {get; set; }//Para rel. con ApplicationUser
+// FK con ApplicationUser
+[Required]
+public string UserId { get; set; } 
 
-    [StringLength(40, ErrorMessage ="Los apellidos deben estar comprendidos entre 1 y 40 caracteres.", MinimumLength=1)]
-    [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
-    public string ApellidosUsuario {get; set; }
-
-    [StringLength(20, ErrorMessage ="El nombre debe estar comprendidos entre 1 y 20 caracteres.", MinimumLength=1)]
-    [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
-     public string NombreUsuario {get; set; }
-
-    [RegularExpression(@"^\d{8}[A-Za-z]$")]
-    public int DNI {get; set; }
-
-    [DataType(System.ComponentModel.DataAnnotations.DataType.PhoneNumber)]
-    public int NumeroTelefono {get; set; }
+[ForeignKey(nameof(UserId))]
+public ApplicationUser ApplicationUser { get; set; }
 
     [DataType(System.ComponentModel.DataAnnotations.DataType.Date)]
     public string FechaAlquiler {get; set; }
