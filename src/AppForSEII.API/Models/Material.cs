@@ -9,9 +9,8 @@ public class Material
     public Material()
     {  
     }
-    public Material(int idMaterial, int cantidad, string nombre, decimal precio)
+    public Material(int cantidad, string nombre, decimal precio)
     {
-        IdMaterial = idMaterial;
         Cantidad = cantidad;
         Nombre = nombre;
         Precio = precio;
@@ -25,8 +24,9 @@ public class Material
     [Range(1,999,ErrorMessage ="Minimo 1, Máximo 999")]
     public int Cantidad {get; set; }
 
-    [StringLength(20, ErrorMessage ="El nombre de un material debe estar comprendido entre 1 y 20 caracteres.", MinimumLength=1)]
-    public required string Nombre {get; set;}//Para evitar errores el entorno me ha recomendado poner "required".
+[Required(ErrorMessage = "El nombre del material es obligatorio.")]
+[StringLength(20, ErrorMessage = "El nombre de un material debe estar comprendido entre 1 y 20 caracteres.", MinimumLength = 1)]
+public string Nombre { get; set; } = string.Empty;
 
     [DataType(System.ComponentModel.DataAnnotations.DataType.Currency)]//Lo que pone antes de .DataType es gen. por el entorno, puede no ser correcto (igual para .Display).
     [System.ComponentModel.DataAnnotations.Display(Name = "Price For Renting")]
@@ -35,6 +35,17 @@ public class Material
 
      //Hacer public IList<MaterialAlquilado> MaterialAlquilado {get; set; } FK.
     public IList<MaterialAlquilado> MaterialesAlquilados {get; set; }//Para rel. con material alquilado.
-    public TipoMaterial TipoMaterial {get; set; }//Para rel. con TipoMaterial
-    public TipoDeporte TipoDeporte {get; set; }//Para rel. con TipoDeporte
+    [Required]
+    public int IdTipoMaterial { get; set; }
+
+    [ForeignKey(nameof(IdTipoMaterial))]
+    public TipoMaterial? TipoMaterial { get; set; }
+
+    // Clave foránea hacia TipoDeporte
+[Required]
+public int IdTipoDeporte { get; set; }
+
+[ForeignKey(nameof(IdTipoDeporte))]
+public TipoDeporte? TipoDeporte { get; set; }
+
 }

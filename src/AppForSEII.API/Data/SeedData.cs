@@ -111,6 +111,58 @@ namespace AppForSEII.API.Data {
         }
 
         //CU2
+        public static void SeedAlquilerMaterial(ApplicationDbContext dbContext, ApplicationUser user)
+{
+TipoDeporte tenis;
+
+if (dbContext.TiposDeportes.FirstOrDefault(td => td.Nombre == "Tenis") == null)
+{
+tenis = new TipoDeporte("Tenis");
+
+dbContext.TiposDeportes.Add(tenis);
+dbContext.SaveChanges();
+}
+else
+{
+tenis = dbContext.TiposDeportes.First(td => td.Nombre == "Tenis");
+}
+
+TipoMaterial raqueta;
+
+if (dbContext.TiposMateriales.FirstOrDefault(tm => tm.NombreTipoMaterial == "Raqueta") == null)
+{
+raqueta = new TipoMaterial("Raqueta");
+
+dbContext.TiposMateriales.Add(raqueta);
+dbContext.SaveChanges();
+}
+else
+{
+raqueta = dbContext.TiposMateriales.First(tm => tm.NombreTipoMaterial == "Raqueta");
+}
+
+if (dbContext.Materiales.FirstOrDefault(m => m.Nombre == "Raqueta Wilson") == null)
+{
+Material material = new Material(3,"Raqueta Wilson",15);
+
+dbContext.Materiales.Add(material);
+dbContext.SaveChanges();
+}
+
+if (dbContext.Alquileres.FirstOrDefault(a => a.IdAlquiler == 1) == null)
+{
+var material = dbContext.Materiales.First();
+
+Alquiler alquiler = new Alquiler(DateTime.Now, MetodoPago.Tarjeta, material.Precio, user);
+
+alquiler.MaterialesAlquilados.Add(new MaterialAlquilado(1,"Sin observaciones",alquiler.IdAlquiler,material.IdMaterial,material.Precio));
+
+dbContext.Alquileres.Add(alquiler);
+}
+
+dbContext.SaveChanges();
+}
+
         //CU3
         public static void SeedInscripcionCompeticion(ApplicationDbContext dbContext, ApplicationUser user)
 {
