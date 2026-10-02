@@ -21,8 +21,14 @@ public decimal Precio { get; set; }
 [Required]
 public int IdPista { get; set; }
 
+[ForeignKey(nameof(IdPista))]
+public Pista? Pista { get; set; }
+
 [Required]
 public int IdReserva { get; set; }
+
+[ForeignKey(nameof(IdReserva))]
+public Reserva? Reserva { get; set; }
 
 
 [StringLength(250,
@@ -35,14 +41,14 @@ public PistaReservada()
 }
 
 // Constructor simple
-public PistaReservada(int id, int cantidad, decimal precio, int idPista, int idReserva, string observaciones)
+public PistaReservada(int id, int cantidad, decimal precio, int idPista, int idReserva)
 {
 Id = id;
 Cantidad = cantidad;
 Precio = precio;
 IdPista = idPista;
 IdReserva = idReserva;
-Observaciones = observaciones;
+
 }
 }
 }
