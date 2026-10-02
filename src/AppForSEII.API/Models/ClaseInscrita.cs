@@ -3,47 +3,55 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AppForSEII.API.Models
 {
-    public class ClaseInscrita
-    {
-        [Key]
-        public int Id { get; set; }
+public class ClaseInscrita
+{
+[Key]
+public int Id { get; set;}
 
-        [StringLength(500)]
-        public string? Observaciones { get; set; }
+[Required]
+public int ClaseDeportivaId { get; set;}
 
-        // El flujo basico del CU indica que dispone de 2 plazas para acompañantes (máximo 3 en total)
-        [Range(1, 3)]
-        public int PlazasReservadas { get; set; }
+[ForeignKey(nameof(ClaseDeportivaId))]
+public ClaseDeportiva? ClaseDeportiva { get; set;}
 
-        [System.ComponentModel.DataAnnotations.DataType(System.ComponentModel.DataAnnotations.DataType.Currency)]
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal Precio { get; set; }
+[Required]
+public int InscripcionId { get; set;}
 
-        // --- Clave Foránea (FK) hacia ClaseDeportiva
-        [Required]
-        public int ClaseDeportivaId { get; set; }
+[ForeignKey(nameof(InscripcionId))]
+public Inscripcion? Inscripcion { get; set;}
 
-        [ForeignKey(nameof(ClaseDeportivaId))]
-        public ClaseDeportiva? ClaseDeportiva { get; set; }
+[StringLength(250,
+ErrorMessage = "Las observaciones no pueden superar los 250 caracteres.")]
+public string Observaciones { get; set;}
 
-        // --- Clave Foránea (FK) hacia Inscripcion 
-        [Required]
-        public int InscripcionId { get; set; }
+[Required(ErrorMessage = "Las plazas reservadas son obligatorias.")]
+[Range(1, 100,
+ErrorMessage = "Las plazas reservadas deben ser mayores que 0.")]
+public int PlazasReservadas { get; set;}
 
-        [ForeignKey(nameof(InscripcionId))]
-        public Inscripcion? Inscripcion { get; set; }
+[Required(ErrorMessage = "El precio es obligatorio.")]
+[Range(0.01, 99999,
+ErrorMessage = "El precio debe ser mayor que 0.")]
+public decimal Precio { get; set;}
 
-        //constructor vacío 
-        public ClaseInscrita() { }
+// Constructor vacío
+public ClaseInscrita()
+{
+}
 
-        public ClaseInscrita(string? observaciones, int plazasReservadas, decimal precio, int claseDeportivaId, int inscripcionId)
-        {
-            Observaciones = observaciones;
-            PlazasReservadas = plazasReservadas;
-            Precio = precio;
-            ClaseDeportivaId = claseDeportivaId;
-            InscripcionId = inscripcionId;
-        }
-    }
-        
+// Constructor simple
+public ClaseInscrita(
+int claseDeportivaId,
+int inscripcionId,
+string observaciones,
+int plazasReservadas,
+decimal precio)
+{
+ClaseDeportivaId = claseDeportivaId;
+InscripcionId = inscripcionId;
+Observaciones = observaciones;
+PlazasReservadas = plazasReservadas;
+Precio = precio;
+}
+}
 }
