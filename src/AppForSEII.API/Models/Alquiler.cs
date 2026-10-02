@@ -49,4 +49,6 @@ public class Alquiler
     [System.ComponentModel.DataAnnotations.Display(Name = "Price For Renting whith cuantity")]
     [Precision(5, 2)]
     public decimal PrecioTotal {get; set; }
+
+    public IList<MaterialAlquilado> MaterialesAlquilados {get; set;}//Para rel. con MaterialAlquilado
 }
