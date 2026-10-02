@@ -76,16 +76,16 @@ namespace AppForSEII.API.Data {
       {
          TipoDeporte padel;
 
-         if (dbContext.TipoDeportes.FirstOrDefault(td => td.Nombre == "Padel") == null)
+         if (dbContext.TiposDeportes.FirstOrDefault(td => td.Nombre == "Padel") == null)
          {
           padel = new TipoDeporte("Padel");
 
-         dbContext.TipoDeportes.Add(padel);
+         dbContext.TiposDeportes.Add(padel);
          dbContext.SaveChanges();
          }
          else 
          {
-         padel = dbContext.TipoDeportes.First(td => td.Nombre == "Padel");
+         padel = dbContext.TiposDeportes.First(td => td.Nombre == "Padel");
           }
 
          if (dbContext.Pistas.FirstOrDefault(p => p.NombrePista == "Pista Padel 1") == null)
@@ -100,7 +100,7 @@ namespace AppForSEII.API.Data {
         {
          var pista = dbContext.Pistas.First();
 
-         var reserva = new Reserva(DateTime.Now, 15, MetodoPago.Bizum, user.Id);
+         var reserva = new Reserva(DateTime.Now, 15, MetodoPago.Bizum, user);
 
          reserva.PistasReservadas.Add(new PistaReservada(1, pista.Precio, pista.IdPista, reserva.IdReserva));
 
