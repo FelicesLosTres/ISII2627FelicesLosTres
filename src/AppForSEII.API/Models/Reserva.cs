@@ -32,7 +32,7 @@ public IList<PistaReservada> PistasReservadas { get; set; }
 public string UserId { get; set; } = string.Empty;
 
 [ForeignKey(nameof(UserId))]
-public ApplicationUser? Usuario { get; set; }
+public ApplicationUser ApplicationUser { get; set; }
 
 // Constructor vacío
 public Reserva()
@@ -43,12 +43,12 @@ public Reserva()
 public Reserva(
 DateTime fechaReserva,
 decimal precioTotal,
-MetodoPago metodoPago)
+MetodoPago metodoPago, ApplicationUser applicationUser)
 {
 FechaReserva = fechaReserva;
 PrecioTotal = precioTotal;
 MetodoPago = metodoPago;
-
+ApplicationUser = applicationUser;
 }
 }
 }
