@@ -19,10 +19,10 @@ public MetodoPago MetodoPago { get; set; }
 ErrorMessage = "El precio total debe ser mayor que 0.")]
 public decimal PrecioTotal { get; set; }
 
-public int UserId { get; set; } // Para la relación con ApplicationUser
+public string UserId { get; set; } // Para la relación con ApplicationUser
 
 [ForeignKey(nameof(UserId))]
-public ApplicationUser ApplicationUser {get; set; }
+public ApplicationUser? ApplicationUser {get; set; }
 
 
 // Relación 1:N con ClaseInscrita
@@ -34,13 +34,7 @@ public Inscripcion()
     
 }
 
-
-public Inscripcion(
-DateTime fechaInscripcion,
-MetodoPago metodoPago,
-decimal precioTotal,
-ApplicationUser applicationUser
-)
+public Inscripcion(DateTime fechaInscripcion, MetodoPago metodoPago, decimal precioTotal, ApplicationUser applicationUser)
 {
 FechaInscripcion = fechaInscripcion;
 MetodoPago = metodoPago;

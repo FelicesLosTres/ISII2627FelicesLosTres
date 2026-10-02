@@ -29,7 +29,7 @@ public IList<PistaReservada> PistasReservadas { get; set; }
 
 // FK con ApplicationUser
 [Required]
-public string UserId { get; set; } = string.Empty;
+public string UserId { get; set; } 
 
 [ForeignKey(nameof(UserId))]
 public ApplicationUser ApplicationUser { get; set; }
