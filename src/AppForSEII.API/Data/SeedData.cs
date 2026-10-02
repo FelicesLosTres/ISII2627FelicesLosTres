@@ -135,22 +135,19 @@ TipoMaterial raqueta;
 
 if (dbContext.TiposMateriales.FirstOrDefault(tm => tm.NombreTipoMaterial == "Raqueta") == null)
 {
-raqueta = new TipoMaterial(1, "Raqueta");
+raqueta = new TipoMaterial("Raqueta");
 
-dbContext.TipoMaterial.Add(raqueta);
+dbContext.TiposMateriales.Add(raqueta);
 dbContext.SaveChanges();
 }
 else
 {
-raqueta = dbContext.TipoMaterial
-.First(tm => tm.NombreTipoMaterial == "Raqueta");
+raqueta = dbContext.TiposMateriales.First(tm => tm.NombreTipoMaterial == "Raqueta");
 }
 
-if (dbContext.Material
-.FirstOrDefault(m => m.Nombre == "Raqueta Wilson") == null)
+if (dbContext.Materiales.FirstOrDefault(m => m.Nombre == "Raqueta Wilson") == null)
 {
 Material material = new Material(
-1,
 3,
 "Raqueta Wilson",
 15
