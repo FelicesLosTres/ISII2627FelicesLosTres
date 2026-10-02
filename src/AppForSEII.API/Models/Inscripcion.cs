@@ -19,6 +19,7 @@ public MetodoPago MetodoPago { get; set; }
 ErrorMessage = "El precio total debe ser mayor que 0.")]
 public decimal PrecioTotal { get; set; }
 
+[Required]
 public string UserId { get; set; } // Para la relación con ApplicationUser
 
 [ForeignKey(nameof(UserId))]
