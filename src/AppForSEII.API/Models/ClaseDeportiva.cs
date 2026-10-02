@@ -1,52 +1,52 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AppForSEII.API.Models
 {
-    public class ClaseDeportiva
-    {
-        [Key]
-        public int Id { get; set; }
+public class ClaseDeportiva
+{
+[Key]
+public int IdClaseDeportiva { get; set; }
 
-        [Required]
-        [StringLength(250)]
-        public string Descripcion { get; set; } = string.Empty;
+[Required(ErrorMessage = "El nombre de la clase es obligatorio.")]
+[StringLength(50, MinimumLength = 3,
+ErrorMessage = "El nombre debe tener entre 3 y 50 caracteres.")]
+public string Nombre { get; set; } 
 
-        [Required]
-        public DateTime FechaHora { get; set; }
+[Required(ErrorMessage = "La descripción es obligatoria.")]
+[StringLength(500,
+ErrorMessage = "La descripción no puede superar los 500 caracteres.")]
+public string Descripcion { get; set; } 
 
-        [StringLength(100)]
-        public string? Lugar { get; set; }
+[Required(ErrorMessage = "La duración es obligatoria.")]
+[Range(1, 300,
+ErrorMessage = "La duración debe estar entre 1 y 300 minutos.")]
+public int Duracion { get; set; }
 
-        [Required]
-        [StringLength(100)]
-        public string Monitor { get; set; } = string.Empty;
+// Relación N:1 con TipoDeporte
+[Required]
+public int IdTipoDeporte { get; set; }
 
-        [Required]
-        [StringLength(50)]
-        public string Nivel { get; set; } = string.Empty;
+//relacion a claseinscrita
+//public Ilist<ClaseInscrita> ClasesInscritas { get; set; }
 
-        // El caso de uso especifica máximo 30 plazas disponibles
-        [Range(0, 30)]
-        public int PlazasDisponibles { get; set; }
-
-        [DataType(DataType.Currency)]
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal PrecioUnitario { get; set; }
-
-        // --- Clave Foránea (FK) hacia TipoDeporte ---
-        [Required]
-        public int TipoDeporteId { get; set; }
-
-        [ForeignKey(nameof(TipoDeporteId))]
-        public TipoDeporte? TipoDeporte { get; set; }
-
-        // --- Relación 1:N -> Registros de inscripción en esta clase ---
-        public IList<ClaseInscrita> ClasesInscritas { get; set; } = new List<ClaseInscrita>();
-
-        public ClaseDeportiva() { }
-
-    }
+//[ForeignKey(nameof(IdTipoDeporte))]
+public TipoDeporte? TipoDeporte { get; set; }
+// Constructor vacío
+public ClaseDeportiva()
+{
+}
+// Constructor simple
+public ClaseDeportiva(
+string nombre,
+string descripcion,
+int duracion,
+int idTipoDeporte)
+{
+Nombre = nombre;
+Descripcion = descripcion;
+Duracion = duracion;
+IdTipoDeporte = idTipoDeporte;
+}
+}
 }
