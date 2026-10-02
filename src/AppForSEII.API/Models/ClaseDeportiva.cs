@@ -28,7 +28,7 @@ public int Duracion { get; set; }
 public int IdTipoDeporte { get; set; }
 
 //relacion a claseinscrita
-//public Ilist<ClaseInscrita> ClasesInscritas { get; set; }
+public IList<ClaseInscrita> ClasesInscritas { get; set; }
 
 //[ForeignKey(nameof(IdTipoDeporte))]
 public TipoDeporte? TipoDeporte { get; set; }

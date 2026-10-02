@@ -24,7 +24,7 @@ public decimal PrecioTotal { get; set; }
 //public string ClienteId { get; set; } 
 
 // Relación 1:N con ClaseInscrita
-//public IList<ClaseInscrita> ClasesInscritas { get; set; }
+public IList<ClaseInscrita> ClasesInscritas { get; set; }
 
 // Constructor vacío
 public Inscripcion()
