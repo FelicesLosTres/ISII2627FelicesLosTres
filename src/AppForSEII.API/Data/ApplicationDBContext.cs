@@ -17,7 +17,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
 
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
-
+    public DbSet<ClaseInscripcion> ClasesInscripciones { get; set; }
 
 
 

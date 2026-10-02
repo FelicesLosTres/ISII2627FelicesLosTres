@@ -1,40 +1,51 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AppForSEII.API.Models
 {
-    public class Inscripcion
-    {
-        [Key]
-        public int Id { get; set; }
+public class Inscripcion
+{
+[Key]
+public int Id { get; set; }
 
-        [Required]
-        public DateTime FechaInscripcion { get; set; }
+[Required(ErrorMessage = "La fecha de inscripción es obligatoria.")]
+public DateTime FechaInscripcion { get; set; }
 
-        [Required]
-        [StringLength(100)]
-        public string DatosPago { get; set; } = string.Empty;
+[Required(ErrorMessage = "El método de pago es obligatorio.")]
+public MetodoPago MetodoPago { get; set; }
 
-        [Required]
-        public string MetodoPago { get; set; } = string.Empty;
+[Required(ErrorMessage = "El precio total es obligatorio.")]
+[Range(0.01, 99999,
+ErrorMessage = "El precio total debe ser mayor que 0.")]
+public decimal PrecioTotal { get; set; }
 
-        [DataType(DataType.Currency)]
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal PrecioTotal { get; set; }
+// Relación N:1 con ApplicationUser
+//[Required]
+//public string ClienteId { get; set; } 
 
-        // Clave Foránea (FK) hacia el Cliente (ApplicationUser) 
-        public string? ClienteId { get; set; }
+[ForeignKey(nameof(ClienteId))]
+public ApplicationUser? Cliente { get; set; }
 
-        [ForeignKey(nameof(ClienteId))]
-        public ApplicationUser? Cliente { get; set; }
+// Relación 1:N con ClaseInscrita
+//public IList<ClaseInscrita> ClasesInscritas { get; set; }
 
-        //Relación 1:N -> Líneas de clases reservadas en la inscripción 
-        public IList<ClaseInscrita> ClasesInscritas { get; set; } = new List<ClaseInscrita>();
+// Constructor vacío
+public Inscripcion()
+{
+    
+}
 
-        //cosntructor vacío 
-        public Inscripcion() { }
-
-    }
+// Constructor simple
+public Inscripcion(
+DateTime fechaInscripcion,
+MetodoPago metodoPago,
+decimal precioTotal,
+string clienteId)
+{
+FechaInscripcion = fechaInscripcion;
+MetodoPago = metodoPago;
+PrecioTotal = precioTotal;
+ClienteId = clienteId;
+}
+}
 }
