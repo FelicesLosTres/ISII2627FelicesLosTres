@@ -29,6 +29,8 @@ namespace AppForSEII.API.Models
         public decimal Precio { get; set; }
 
         public IList<CompeticionInscrita> CompeticionesInscritas { get; set; }
+
+        public TipoDeporte TipoDeporte { get; set; }
         public Competicion()
         {
         }
