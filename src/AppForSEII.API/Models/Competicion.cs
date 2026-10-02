@@ -28,7 +28,7 @@ namespace AppForSEII.API.Models
         [Range(0.00, 99999, ErrorMessage = "El precio no puede ser negativo.")]
         public decimal Precio { get; set; }
 
-   
+        public IList<CompeticionInscrita> CompeticionesInscritas { get; set; }
         public Competicion()
         {
         }
