@@ -43,7 +43,7 @@ public class Alquiler
     public string FechaAlquiler {get; set; }
     public IList<MaterialAlquilado> MaterialesAlquilados {get; set; }//Para relación con MaterialAlquilado
 
-    [StringLength(40, ErrorMessage ="El campo de método de pago debe estar comprendido entre 1 y 40 caracteres.", MinimumLength=1)]]
+    [StringLength(40, ErrorMessage ="El campo de método de pago debe estar comprendido entre 1 y 40 caracteres.", MinimumLength=1)]
     public string MetodoPago {get; set; }
 
     [DataType(System.ComponentModel.DataAnnotations.DataType.Currency)]//Lo que pone antes de .DataType es gen. por el entorno, puede no ser correcto (igual para .Display).
