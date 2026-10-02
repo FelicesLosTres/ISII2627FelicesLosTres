@@ -71,6 +71,50 @@ namespace AppForSEII.API.Data {
 
         }
 
+        //CU1
+        public static void SeedReservaPista(ApplicationDbContext dbContext, ApplicationUser user)
+      {
+         TipoDeporte padel;
+
+         if (dbContext.TiposDeportes.FirstOrDefault(td => td.Nombre == "Padel") == null)
+         {
+          padel = new TipoDeporte("Padel");
+
+         dbContext.TiposDeportes.Add(padel);
+         dbContext.SaveChanges();
+         }
+         else 
+         {
+         padel = dbContext.TiposDeportes.First(td => td.Nombre == "Padel");
+          }
+
+         if (dbContext.Pistas.FirstOrDefault(p => p.NombrePista == "Pista Padel 1") == null)
+         {
+         var pista = new Pista("Pista Padel 1", 4, 15, 10);
+
+         dbContext.Pistas.Add(pista);
+         dbContext.SaveChanges();
+          }
+
+         if (dbContext.Reservas.FirstOrDefault(r => r.IdReserva == 1) == null)
+        {
+         var pista = dbContext.Pistas.First();
+
+         var reserva = new Reserva(DateTime.Now, 15, MetodoPago.Bizum, user);
+
+         reserva.PistasReservadas.Add(new PistaReservada(1, pista.Precio, pista.IdPista, reserva.IdReserva));
+
+         dbContext.Reservas.Add(reserva);
+         }
+
+          dbContext.SaveChanges();
+        }
+
+        //CU2
+        //CU3
+        //CU4
+
+
 
 
 
