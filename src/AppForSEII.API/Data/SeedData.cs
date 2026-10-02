@@ -133,7 +133,7 @@ tenis = dbContext.TiposDeportes
 
 TipoMaterial raqueta;
 
-if (dbContext.TipoMaterial.FirstOrDefault(tm => tm.NombreTipoMaterial == "Raqueta") == null)
+if (dbContext.TiposMateriales.FirstOrDefault(tm => tm.NombreTipoMaterial == "Raqueta") == null)
 {
 raqueta = new TipoMaterial(1, "Raqueta");
 
