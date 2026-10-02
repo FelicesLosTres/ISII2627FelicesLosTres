@@ -41,7 +41,6 @@ public class Alquiler
 
     [DataType(System.ComponentModel.DataAnnotations.DataType.Date)]
     public string FechaAlquiler {get; set; }
-    public IList<MaterialAlquilado> MaterialesAlquilados {get; set; }//Para relación con MaterialAlquilado
 
     [StringLength(40, ErrorMessage ="El campo de método de pago debe estar comprendido entre 1 y 40 caracteres.", MinimumLength=1)]
     public string MetodoPago {get; set; }
