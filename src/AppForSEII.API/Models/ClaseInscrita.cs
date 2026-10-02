@@ -3,10 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AppForSEII.API.Models
 {
+    [PrimaryKey(nameof(ClaseDeportivaId), nameof(InscripcionId))]
 public class ClaseInscrita
 {
-[Key]
-public int Id { get; set;}
 
 [Required]
 public int ClaseDeportivaId { get; set;}
