@@ -153,17 +153,16 @@ Material material = new Material(
 15
 );
 
-dbContext.Material.Add(material);
+dbContext.Materiales.Add(material);
 dbContext.SaveChanges();
 }
 
 if (dbContext.Alquileres
 .FirstOrDefault(a => a.IdAlquiler == 1) == null)
 {
-var material = dbContext.Material.First();
+var material = dbContext.Materiales.First();
 
 Alquiler alquiler = new Alquiler(
-a.IdAlquiler,
 MetodoPago.Tarjeta,
 material.Precio,
 user
