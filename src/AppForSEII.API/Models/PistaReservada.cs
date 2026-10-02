@@ -3,12 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AppForSEII.API.Models
 {
-
+[PrimaryKey(nameof(IdPista), nameof(IdReserva))]
 public class PistaReservada
 {
-
-[Key]
-public int Id { get; set; }
 
 [Required(ErrorMessage = "La cantidad es obligatoria.")]
 [Range(1, 100, ErrorMessage = "La cantidad debe ser mayor que 0.")]
@@ -41,9 +38,8 @@ public PistaReservada()
 }
 
 // Constructor simple
-public PistaReservada(int id, int cantidad, decimal precio, int idPista, int idReserva)
+public PistaReservada( int cantidad, decimal precio, int idPista, int idReserva)
 {
-Id = id;
 Cantidad = cantidad;
 Precio = precio;
 IdPista = idPista;
