@@ -9,7 +9,7 @@ public class Alquiler
     {
         
     }
-    public Alquiler(int idAlquiler, string apellidosUsuario, string nombreUsuario, int dNI, int numeroTelefono, string fechaAlquiler, string metodoPago, decimal precioTotal)
+    public Alquiler(int idAlquiler, string apellidosUsuario, string nombreUsuario, int dNI, int numeroTelefono, string fechaAlquiler, MetodoPago metodoPago, decimal precioTotal)
     {
         IdAlquiler = idAlquiler;
         ApellidosUsuario = apellidosUsuario;
@@ -43,7 +43,7 @@ public class Alquiler
     public string FechaAlquiler {get; set; }
 
     [StringLength(40, ErrorMessage ="El campo de método de pago debe estar comprendido entre 1 y 40 caracteres.", MinimumLength=1)]
-    public string MetodoPago {get; set; }
+    public MetodoPago MetodoPago {get; set; }
 
     [DataType(System.ComponentModel.DataAnnotations.DataType.Currency)]//Lo que pone antes de .DataType es gen. por el entorno, puede no ser correcto (igual para .Display).
     [System.ComponentModel.DataAnnotations.Display(Name = "Price For Renting whith cuantity")]

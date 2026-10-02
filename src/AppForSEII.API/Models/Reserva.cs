@@ -22,7 +22,7 @@ public decimal PrecioTotal { get; set; }
 [Required(ErrorMessage = "El método de pago es obligatorio.")]
 [StringLength(30,
 ErrorMessage = "El método de pago no puede superar los 30 caracteres.")]
-public string MetodoPago { get; set; } = string.Empty;
+public MetodoPago MetodoPago { get; set; }
 
 // Relación 1:N con PistaReservada
 public IList<PistaReservada> PistasReservadas { get; set; }
@@ -43,7 +43,7 @@ public Reserva()
 public Reserva(
 DateTime fechaReserva,
 decimal precioTotal,
-string metodoPago)
+MetodoPago metodoPago)
 {
 FechaReserva = fechaReserva;
 PrecioTotal = precioTotal;
