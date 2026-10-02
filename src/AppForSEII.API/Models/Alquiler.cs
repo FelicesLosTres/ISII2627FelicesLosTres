@@ -9,7 +9,7 @@ public class Alquiler
     {
         
     }
-    public Alquiler(int idAlquiler, string apellidosUsuario, string nombreUsuario, int dNI, int numeroTelefono, string fechaAlquiler, MetodoPago metodoPago, decimal precioTotal)
+    public Alquiler(int idAlquiler, string apellidosUsuario, string nombreUsuario, int dNI, int numeroTelefono, string fechaAlquiler, MetodoPago metodoPago, decimal precioTotal, ApplicationUser applicationUser)
     {
         IdAlquiler = idAlquiler;
         ApellidosUsuario = apellidosUsuario;
@@ -19,11 +19,14 @@ public class Alquiler
         FechaAlquiler = fechaAlquiler;
         MetodoPago = metodoPago;
         PrecioTotal = precioTotal;
+        ApplicationUser = applicationUser;
     }
 
     [Key]
     [RegularExpression (@"^\d{10}$", ErrorMessage ="Id de Alquiler tiene una logitid de 10.")]
     public int IdAlquiler {get; set; }
+
+    public ApplicationUser ApplicationUser {get; set; }//Para rel. con ApplicationUser
 
     [StringLength(40, ErrorMessage ="Los apellidos deben estar comprendidos entre 1 y 40 caracteres.", MinimumLength=1)]
     [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
