@@ -156,6 +156,32 @@ dbContext.Inscripciones.Add(inscripcion);
 dbContext.SaveChanges();
 }
         //CU4
+        public static void SeedInscripcionClase(ApplicationDbContext dbContext, ApplicationUser user)
+{
+if (dbContext.ClasesDeportivas.FirstOrDefault(c => c.Nombre == "Iniciacion al tenis") == null)
+{
+var tipoDeporte = dbContext.TiposDeportes.First();
+
+var clase = new ClaseDeportiva("Iniciacion al tenis", "Clase basica", 20, tipoDeporte.Id, DateTime.Now, "Pista tenis", "JuanDiego", "Avanzado", 20, 20 );
+
+dbContext.ClasesDeportivas.Add(clase);
+}
+
+dbContext.SaveChanges();
+
+if (dbContext.Inscripciones.FirstOrDefault(i => i.Id == 2) == null)
+{
+var clase = dbContext.ClasesDeportivas.First();
+
+var inscripcion = new Inscripcion(DateTime.Now, MetodoPago.Transferencia, 10, user);
+
+inscripcion.ClasesInscritas.Add(new ClaseInscrita(clase.IdClaseDeportiva, inscripcion.Id, "Sin observaciones", 1, 10));
+
+dbContext.Inscripciones.Add(inscripcion);
+}
+
+dbContext.SaveChanges();
+}
 
 
 
