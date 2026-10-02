@@ -24,6 +24,7 @@ public class Material
     [Range(1,999,ErrorMessage ="Minimo 1, Máximo 999")]
     public int Cantidad {get; set; }
 
+[Required(ErrorMessage = "El nombre del material es obligatorio.")]
     [StringLength(20, ErrorMessage ="El nombre de un material debe estar comprendido entre 1 y 20 caracteres.", MinimumLength=1)]
     public required string Nombre {get; set;}//Para evitar errores el entorno me ha recomendado poner "required".
 

@@ -7,7 +7,7 @@ public class MaterialAlquilado
     public MaterialAlquilado()
     {
     }
-    public MaterialAlquilado(int cantidad, string descripcion, int idAlquiler, int idMaterial, int precio)
+    public MaterialAlquilado(int cantidad, string descripcion, int idAlquiler, int idMaterial, decimal precio)
     {
         Cantidad = cantidad;
         Descripcion = descripcion;
@@ -36,5 +36,5 @@ public Material? Material { get; set; }
     [DataType(System.ComponentModel.DataAnnotations.DataType.Currency)]//Lo que pone antes de .DataType es gen. por el entorno, puede no ser correcto (igual para .Display).
     [System.ComponentModel.DataAnnotations.Display(Name = "Price For Renting whith cuantity")]
     [Precision(5, 2)]
-    public int Precio {get; set; }
+    public decimal Precio {get; set; }
 }
