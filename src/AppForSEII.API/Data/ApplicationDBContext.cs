@@ -14,7 +14,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
 
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
-    //public DbSet<ClaseInscrita> ClasesInscritas { get; set; }
+    public DbSet<ClaseInscrita> ClasesInscritas { get; set; }
     public DbSet<ClaseDeportiva> ClasesDeportivas { get; set; }
     
     public DbSet<TipoDeporte> TiposDeportes { get; set; }
