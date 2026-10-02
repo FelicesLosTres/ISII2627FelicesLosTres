@@ -22,6 +22,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     
     public DbSet<Inscripcion> Inscripciones { get; set; }
     public DbSet<Competicion> Competiciones { get; set; }
+
+    public DbSet<CompeticionInscrita> CompeticionesInscritas { get; set; }
    
 
 

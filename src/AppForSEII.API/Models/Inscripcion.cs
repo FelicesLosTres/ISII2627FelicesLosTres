@@ -33,7 +33,7 @@ namespace AppForSEII.API.Models
         [Required(ErrorMessage = "El teléfono es obligatorio.")]
         public string Telefono { get; set; }
 
-        
+        public IList<CompeticionInscrita> CompeticionesInscritas { get; set; }
         public Inscripcion()
         {
         }
