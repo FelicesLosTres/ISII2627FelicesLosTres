@@ -9,9 +9,8 @@ public class Material
     public Material()
     {  
     }
-    public Material(int idMaterial, int cantidad, string nombre, decimal precio)
+    public Material(int cantidad, string nombre, decimal precio)
     {
-        IdMaterial = idMaterial;
         Cantidad = cantidad;
         Nombre = nombre;
         Precio = precio;
@@ -35,6 +34,17 @@ public class Material
 
      //Hacer public IList<MaterialAlquilado> MaterialAlquilado {get; set; } FK.
     public IList<MaterialAlquilado> MaterialesAlquilados {get; set; }//Para rel. con material alquilado.
-    public TipoMaterial TipoMaterial {get; set; }//Para rel. con TipoMaterial
-    public TipoDeporte TipoDeporte {get; set; }//Para rel. con TipoDeporte
+    [Required]
+    public int IdTipoMaterial { get; set; }
+
+    [ForeignKey(nameof(IdTipoMaterial))]
+    public TipoMaterial? TipoMaterial { get; set; }
+
+    // Clave foránea hacia TipoDeporte
+[Required]
+public int IdTipoDeporte { get; set; }
+
+[ForeignKey(nameof(IdTipoDeporte))]
+public TipoDeporte? TipoDeporte { get; set; }
+
 }
