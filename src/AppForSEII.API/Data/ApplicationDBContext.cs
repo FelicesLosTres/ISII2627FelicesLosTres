@@ -19,7 +19,13 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
     public DbSet<TipoDeporte> TiposDeportes { get; set; }
  
+    public DbSet<PistaReservada> PistasReservadas { get; set; }
 
+    public DbSet<Alquiler> Alquileres { get; set; }
+    
+    public DbSet<Inscripcion> Inscripciones { get; set; }
+    public DbSet<Competicion> Competiciones { get; set; }
+   
 
 
 
