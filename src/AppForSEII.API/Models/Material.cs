@@ -25,8 +25,8 @@ public class Material
     public int Cantidad {get; set; }
 
 [Required(ErrorMessage = "El nombre del material es obligatorio.")]
-    [StringLength(20, ErrorMessage ="El nombre de un material debe estar comprendido entre 1 y 20 caracteres.", MinimumLength=1)]
-    public required string Nombre {get; set;}//Para evitar errores el entorno me ha recomendado poner "required".
+[StringLength(20, ErrorMessage = "El nombre de un material debe estar comprendido entre 1 y 20 caracteres.", MinimumLength = 1)]
+public string Nombre { get; set; } = string.Empty;
 
     [DataType(System.ComponentModel.DataAnnotations.DataType.Currency)]//Lo que pone antes de .DataType es gen. por el entorno, puede no ser correcto (igual para .Display).
     [System.ComponentModel.DataAnnotations.Display(Name = "Price For Renting")]
