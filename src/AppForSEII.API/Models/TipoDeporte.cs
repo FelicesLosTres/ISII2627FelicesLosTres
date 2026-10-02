@@ -23,7 +23,7 @@ public IList<Material> Materiales { get; set; }
 public IList<Competicion> Competiciones { get; set; }
 
 // Relación 1:N con ClaseDeportiva
-//public IList<ClaseDeportiva> ClasesDeportivas { get; set; }
+public IList<ClaseDeportiva> ClasesDeportivas { get; set; }
 
 public TipoDeporte()
 {
