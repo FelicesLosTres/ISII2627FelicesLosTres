@@ -30,19 +30,26 @@ namespace AppForSEII.API.Models
 
         public IList<CompeticionInscrita> CompeticionesInscritas { get; set; }
 
-        public TipoDeporte TipoDeporte { get; set; }
+        // Clave foránea hacia TipoDeporte
+        [Required]
+        public int IdTipoDeporte { get; set; }
+
+        [ForeignKey(nameof(IdTipoDeporte))]
+        public TipoDeporte? TipoDeporte { get; set; }
+
         public Competicion()
         {
         }
 
       
-        public Competicion(DateTime fecha, string lugar, string nombre, int plazas, decimal precio)
+        public Competicion(DateTime fecha, string lugar, string nombre, int plazas, decimal precio, int idTipoDeporte)
         {
             Fecha = fecha;
             Lugar = lugar;
             Nombre = nombre;
             Plazas = plazas;
             Precio = precio;
+            IdTipoDeporte = idTipoDeporte;
         }
     }
 }
