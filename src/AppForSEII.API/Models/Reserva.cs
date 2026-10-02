@@ -24,7 +24,15 @@ public decimal PrecioTotal { get; set; }
 ErrorMessage = "El método de pago no puede superar los 30 caracteres.")]
 public string MetodoPago { get; set; } = string.Empty;
 
+// Relación 1:N con PistaReservada
+public IList<PistaReservada> PistasReservadas { get; set; }
 
+// FK con ApplicationUser
+[Required]
+public string UserId { get; set; } = string.Empty;
+
+[ForeignKey(nameof(UserId))]
+public ApplicationUser? Usuario { get; set; }
 
 // Constructor vacío
 public Reserva()

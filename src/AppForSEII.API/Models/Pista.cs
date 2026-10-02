@@ -30,6 +30,16 @@ public decimal Precio { get; set; }
 ErrorMessage = "El stock no puede ser negativo.")]
 public int Stock { get; set; }
 
+// Clave foránea hacia TipoDeporte
+[Required]
+public int IdTipoDeporte { get; set; }
+
+[ForeignKey(nameof(IdTipoDeporte))]
+public TipoDeporte? TipoDeporte { get; set; }
+
+// Relación 1:N con PistaReservada
+public IList<PistaReservada> PistasReservadas { get; set; }
+
 // Constructor vacío
 public Pista()
 {
