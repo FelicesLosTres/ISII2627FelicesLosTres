@@ -1,6 +1,7 @@
 
 
 using System.Text.RegularExpressions;
+namespace AppForSEII.API.Models;
 
 public class Material
 {
@@ -32,8 +33,8 @@ public class Material
     [Precision(5, 2)]//5 dígitos y 2 dec.
     public decimal Precio {get; set; }
 
-    //Hacer public IList<MaterialAlquilado> MaterialAlquilado {get; set; } FK.
-    //public IList<MaterialAlquilado> MaterialesAlquilados {get; set; }//Para rel. con material alquilado.
-   // public TipoMaterial {get; set; }//Para rel. con TipoMaterial
-   // public TipoDeporte {get; set; }//Para rel. con TipoDeporte
+     //Hacer public IList<MaterialAlquilado> MaterialAlquilado {get; set; } FK.
+    public IList<MaterialAlquilado> MaterialesAlquilados {get; set; }//Para rel. con material alquilado.
+    public TipoMaterial TipoMaterial {get; set; }//Para rel. con TipoMaterial
+    public TipoDeporte TipoDeporte {get; set; }//Para rel. con TipoDeporte
 }

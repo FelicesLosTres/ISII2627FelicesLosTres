@@ -21,13 +21,11 @@ public class MaterialAlquilado
 
     [StringLength(200, ErrorMessage ="La descripción tiene un máximo de 200 caracteres.")]
     public string? Descripcion {get; set; }
-    public int IdAlquiler {get; set; }
-    public int IdMaterial {get; set; }
+    public int IdAlquiler {get; set; }//Rel. con Alquiler
+    public int IdMaterial {get; set; }//Rel. con Material
 
     [DataType(System.ComponentModel.DataAnnotations.DataType.Currency)]//Lo que pone antes de .DataType es gen. por el entorno, puede no ser correcto (igual para .Display).
     [System.ComponentModel.DataAnnotations.Display(Name = "Price For Renting whith cuantity")]
     [Precision(5, 2)]
     public int Precio {get; set; }
-
-    //public Alquiler {get; set;} //Para la relación con Alquiler
 }
