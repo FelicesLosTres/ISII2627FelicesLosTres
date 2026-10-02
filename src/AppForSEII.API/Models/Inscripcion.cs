@@ -29,6 +29,9 @@ public ApplicationUser? ApplicationUser {get; set; }
 // Relación 1:N con ClaseInscrita
 public IList<ClaseInscrita> ClasesInscritas { get; set; }
 
+//Relación 1:N con CompeticionesInscritas
+public IList<CompeticionInscrita> CompeticionesInscritas { get; set; }
+
 
 public Inscripcion()
 {
