@@ -23,9 +23,6 @@ public decimal PrecioTotal { get; set; }
 //[Required]
 //public string ClienteId { get; set; } 
 
-[ForeignKey(nameof(ClienteId))]
-public ApplicationUser? Cliente { get; set; }
-
 // Relación 1:N con ClaseInscrita
 //public IList<ClaseInscrita> ClasesInscritas { get; set; }
 
