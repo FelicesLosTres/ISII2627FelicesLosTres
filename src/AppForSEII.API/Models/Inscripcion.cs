@@ -39,7 +39,7 @@ public Inscripcion(
 DateTime fechaInscripcion,
 MetodoPago metodoPago,
 decimal precioTotal,
-ApplicationUser applicationUser,
+ApplicationUser applicationUser
 )
 {
 FechaInscripcion = fechaInscripcion;
