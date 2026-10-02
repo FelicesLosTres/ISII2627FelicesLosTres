@@ -42,7 +42,7 @@ string clienteId)
 FechaInscripcion = fechaInscripcion;
 MetodoPago = metodoPago;
 PrecioTotal = precioTotal;
-ClienteId = clienteId;
+
 }
 }
 }
