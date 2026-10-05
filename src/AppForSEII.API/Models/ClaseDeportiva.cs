@@ -29,6 +29,7 @@ public int PlazasDisponibles { get; set; }
 
 [Required(ErrorMessage = "El precio unitario es obligatorio.")]
 [Range(0.01, 99999)]
+[Precision(18, 2)]
 public decimal PrecioUnitario { get; set; }
 
 [Required(ErrorMessage = "El nombre de la clase es obligatorio.")]

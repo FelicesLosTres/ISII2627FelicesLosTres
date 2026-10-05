@@ -31,7 +31,8 @@ public int PlazasReservadas { get; set;}
 [Required(ErrorMessage = "El precio es obligatorio.")]
 [Range(0.01, 99999,
 ErrorMessage = "El precio debe ser mayor que 0.")]
-public decimal Precio { get; set;}
+[Precision(18, 2)]
+public decimal Precio { get; set; }
 
 // Constructor vacío
 public ClaseInscrita()
