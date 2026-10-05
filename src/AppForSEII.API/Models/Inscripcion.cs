@@ -17,6 +17,7 @@ public MetodoPago MetodoPago { get; set; }
 [Required(ErrorMessage = "El precio total es obligatorio.")]
 [Range(0.01, 99999,
 ErrorMessage = "El precio total debe ser mayor que 0.")]
+[Precision(18, 2)]
 public decimal PrecioTotal { get; set; }
 
 [Required]

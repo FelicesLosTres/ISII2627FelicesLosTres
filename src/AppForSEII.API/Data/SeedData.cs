@@ -1,244 +1,263 @@
-namespace AppForSEII.API.Data {
-    public class SeedData {
-        public static void Initialize(ApplicationDbContext dbContext, IServiceProvider serviceProvider, ILogger logger) {
-            List<string> rolesNames = new List<string> { "Administrator", "Employee", "Customer" };
+namespace AppForSEII.API.Data
+{
+    public class SeedData
+    {
+        private const string AdminEmail = "elena@uclm.es";
+        private const string CustomerEmail = "peter@uclm.es";
 
-            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            try {
-                SeedRoles(roleManager, rolesNames);
-            }
-            catch (Exception ex) {
-                logger.LogError(ex, "An error occurred seeding the roles in the Database.");
-            }
-
-            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-            try {
-                SeedUsers(userManager, rolesNames);
-            }
-            catch (Exception ex) {
-                logger.LogError(ex, "An error occurred seeding the Users in the Database.");
-            }
-
- 
-
-        }
-
-        public static void SeedRoles(RoleManager<IdentityRole> roleManager, List<string> roles) {
-
-            foreach (string roleName in roles) {
-                //it checks such role does not exist in the database 
-                if (!roleManager.RoleExistsAsync(roleName).Result) {
-                    IdentityRole role = new IdentityRole();
-                    role.Name = roleName;
-                    role.NormalizedName = roleName;
-                    IdentityResult roleResult = roleManager.CreateAsync(role).Result;
-                }
-            }
-
-        }
-
-        public static void SeedUsers(UserManager<ApplicationUser> userManager, List<string> roles) {
-            //first, it checks the user does not already exist in the DB
-            if (userManager.FindByNameAsync("elena@uclm.es").Result == null) {
-                ApplicationUser user = new ApplicationUser("1", "Elena", "Navarro Martínez", "elena@uclm.es");
-                user.EmailConfirmed = true;
-
-                var result = userManager.CreateAsync(user, "Password1234%");
-                result.Wait();
-
-                if (result.IsCompletedSuccessfully) {
-                    //administrator role
-                    userManager.AddToRoleAsync(user, roles[0]).Wait();
-                }
-            }
-
-
-            if (userManager.FindByNameAsync("peter@uclm.es").Result == null) {
-                //A customer class has been defined because it has different attributes (purchase, rental, etc.)
-                ApplicationUser user = new ApplicationUser("3", "Peter", "Jackson", "peter@uclm.es");
-                user.EmailConfirmed = true;
-
-                var result = userManager.CreateAsync(user, "OtherPass12$");
-
-                result.Wait();
-
-                if (result.IsCompletedSuccessfully) {
-                    //customer role
-                    userManager.AddToRoleAsync(user, roles[2]).Wait();
-
-                }
-            }
-
-        }
-
-        //CU1
-        public static void SeedReservaPista(ApplicationDbContext dbContext, ApplicationUser user)
-      {
-         TipoDeporte padel;
-
-         if (dbContext.TiposDeportes.FirstOrDefault(td => td.Nombre == "Padel") == null)
-         {
-          padel = new TipoDeporte("Padel");
-
-         dbContext.TiposDeportes.Add(padel);
-         dbContext.SaveChanges();
-         }
-         else 
-         {
-         padel = dbContext.TiposDeportes.First(td => td.Nombre == "Padel");
-          }
-
-         if (dbContext.Pistas.FirstOrDefault(p => p.NombrePista == "Pista Padel 1") == null)
-         {
-         var pista = new Pista("Pista Padel 1", 4, 15, 10, padel.Id);
-
-         dbContext.Pistas.Add(pista);
-         dbContext.SaveChanges();
-          }
-
-         if (dbContext.Reservas.FirstOrDefault(r => r.IdReserva == 1) == null)
+        public static async Task InitializeAsync(
+            ApplicationDbContext dbContext,
+            IServiceProvider serviceProvider)
         {
-         var pista = dbContext.Pistas.First();
+            var roles = new[] { "Administrator", "Employee", "Customer" };
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-         var reserva = new Reserva(DateTime.Now, 15, MetodoPago.Bizum, user);
+            foreach (var roleName in roles)
+            {
+                if (!await roleManager.RoleExistsAsync(roleName))
+                {
+                    EnsureSucceeded(
+                        await roleManager.CreateAsync(new IdentityRole(roleName)),
+                        $"creating role '{roleName}'");
+                }
+            }
 
-         reserva.PistasReservadas.Add(new PistaReservada(1, pista.Precio, pista.IdPista, reserva.IdReserva));
+            var administrator = await userManager.FindByEmailAsync(AdminEmail);
+            if (administrator is null)
+            {
+                administrator = new ApplicationUser("1", "Elena", "Navarro Martínez", AdminEmail)
+                {
+                    EmailConfirmed = true
+                };
+                EnsureSucceeded(
+                    await userManager.CreateAsync(administrator, "Password1234%"),
+                    $"creating user '{AdminEmail}'");
+            }
+            await EnsureInRoleAsync(userManager, administrator, roles[0]);
 
-         dbContext.Reservas.Add(reserva);
-         }
+            var customer = await userManager.FindByEmailAsync(CustomerEmail);
+            if (customer is null)
+            {
+                customer = new ApplicationUser("3", "Peter", "Jackson", CustomerEmail)
+                {
+                    EmailConfirmed = true
+                };
+                EnsureSucceeded(
+                    await userManager.CreateAsync(customer, "OtherPass12$"),
+                    $"creating user '{CustomerEmail}'");
+            }
+            await EnsureInRoleAsync(userManager, customer, roles[2]);
 
-          dbContext.SaveChanges();
+            await SeedReservaPista(dbContext, customer);
+            await SeedAlquilerMaterial(dbContext, customer);
+            await SeedInscripcionCompeticion(dbContext, customer);
+            await SeedInscripcionClase(dbContext, customer);
         }
 
-        //CU2
-        public static void SeedAlquilerMaterial(ApplicationDbContext dbContext, ApplicationUser user)
-{
-TipoDeporte tenis;
+        private static async Task EnsureInRoleAsync(
+            UserManager<ApplicationUser> userManager,
+            ApplicationUser user,
+            string role)
+        {
+            if (!await userManager.IsInRoleAsync(user, role))
+            {
+                EnsureSucceeded(
+                    await userManager.AddToRoleAsync(user, role),
+                    $"adding user '{user.Email}' to role '{role}'");
+            }
+        }
 
-if (dbContext.TiposDeportes.FirstOrDefault(td => td.Nombre == "Tenis") == null)
-{
-tenis = new TipoDeporte("Tenis");
+        private static void EnsureSucceeded(IdentityResult result, string operation)
+        {
+            if (!result.Succeeded)
+            {
+                var errors = string.Join("; ", result.Errors.Select(error => error.Description));
+                throw new InvalidOperationException($"Identity failed while {operation}: {errors}");
+            }
+        }
 
-dbContext.TiposDeportes.Add(tenis);
-dbContext.SaveChanges();
-}
-else
-{
-tenis = dbContext.TiposDeportes.First(td => td.Nombre == "Tenis");
-}
+        private static async Task<TipoDeporte> GetOrCreateTipoDeporte(
+            ApplicationDbContext dbContext,
+            string nombre)
+        {
+            var tipoDeporte = await dbContext.TiposDeportes
+                .FirstOrDefaultAsync(tipo => tipo.Nombre == nombre);
+            if (tipoDeporte is not null)
+            {
+                return tipoDeporte;
+            }
 
-TipoMaterial raqueta;
+            tipoDeporte = new TipoDeporte(nombre);
+            dbContext.TiposDeportes.Add(tipoDeporte);
+            await dbContext.SaveChangesAsync();
+            return tipoDeporte;
+        }
 
-if (dbContext.TiposMateriales.FirstOrDefault(tm => tm.NombreTipoMaterial == "Raqueta") == null)
-{
-raqueta = new TipoMaterial("Raqueta");
+        // CU1
+        public static async Task SeedReservaPista(ApplicationDbContext dbContext, ApplicationUser user)
+        {
+            var padel = await GetOrCreateTipoDeporte(dbContext, "Padel");
+            var pista = await dbContext.Pistas
+                .FirstOrDefaultAsync(item => item.NombrePista == "Pista Padel 1");
+            if (pista is null)
+            {
+                pista = new Pista("Pista Padel 1", 4, 15, 10, padel.Id);
+                dbContext.Pistas.Add(pista);
+                await dbContext.SaveChangesAsync();
+            }
 
-dbContext.TiposMateriales.Add(raqueta);
-dbContext.SaveChanges();
-}
-else
-{
-raqueta = dbContext.TiposMateriales.First(tm => tm.NombreTipoMaterial == "Raqueta");
-}
+            var reservaExists = await dbContext.Reservas.AnyAsync(reserva =>
+                reserva.UserId == user.Id
+                && reserva.PistasReservadas.Any(item => item.IdPista == pista.IdPista));
+            if (!reservaExists)
+            {
+                var reserva = new Reserva(DateTime.Now, 15, MetodoPago.Bizum, user)
+                {
+                    PistasReservadas = new List<PistaReservada>
+                    {
+                        new(1, pista.Precio, pista.IdPista, 0)
+                        {
+                            Pista = pista,
+                            Observaciones = string.Empty
+                        }
+                    }
+                };
+                dbContext.Reservas.Add(reserva);
+                await dbContext.SaveChangesAsync();
+            }
+        }
 
-if (dbContext.Materiales.FirstOrDefault(m => m.Nombre == "Raqueta Wilson") == null)
-{
-Material material = new Material(3,"Raqueta Wilson",15);
+        // CU2
+        public static async Task SeedAlquilerMaterial(ApplicationDbContext dbContext, ApplicationUser user)
+        {
+            var tenis = await GetOrCreateTipoDeporte(dbContext, "Tenis");
+            var tipoMaterial = await dbContext.TiposMateriales
+                .FirstOrDefaultAsync(tipo => tipo.NombreTipoMaterial == "Raqueta");
+            if (tipoMaterial is null)
+            {
+                tipoMaterial = new TipoMaterial("Raqueta");
+                dbContext.TiposMateriales.Add(tipoMaterial);
+                await dbContext.SaveChangesAsync();
+            }
 
-dbContext.Materiales.Add(material);
-dbContext.SaveChanges();
-}
+            var material = await dbContext.Materiales
+                .FirstOrDefaultAsync(item => item.Nombre == "Raqueta Wilson");
+            if (material is null)
+            {
+                material = new Material(3, "Raqueta Wilson", 15)
+                {
+                    IdTipoDeporte = tenis.Id,
+                    IdTipoMaterial = tipoMaterial.IdTipoMaterial,
+                    TipoDeporte = tenis,
+                    TipoMaterial = tipoMaterial
+                };
+                dbContext.Materiales.Add(material);
+                await dbContext.SaveChangesAsync();
+            }
 
-if (dbContext.Alquileres.FirstOrDefault(a => a.IdAlquiler == 1) == null)
-{
-var material = dbContext.Materiales.First();
+            var alquilerExists = await dbContext.Alquileres.AnyAsync(alquiler =>
+                alquiler.UserId == user.Id
+                && alquiler.MaterialesAlquilados.Any(item => item.IdMaterial == material.IdMaterial));
+            if (!alquilerExists)
+            {
+                var alquiler = new Alquiler(DateTime.Now, MetodoPago.Tarjeta, material.Precio, user)
+                {
+                    MaterialesAlquilados = new List<MaterialAlquilado>()
+                };
+                alquiler.MaterialesAlquilados.Add(
+                    new MaterialAlquilado(1, "Sin observaciones", 0, material.IdMaterial, material.Precio)
+                    {
+                        Alquiler = alquiler,
+                        Material = material
+                    });
+                dbContext.Alquileres.Add(alquiler);
+                await dbContext.SaveChangesAsync();
+            }
+        }
 
-Alquiler alquiler = new Alquiler(DateTime.Now, MetodoPago.Tarjeta, material.Precio, user);
+        // CU3
+        public static async Task SeedInscripcionCompeticion(ApplicationDbContext dbContext, ApplicationUser user)
+        {
+            var tenis = await GetOrCreateTipoDeporte(dbContext, "Tenis");
+            var competicion = await dbContext.Competiciones
+                .FirstOrDefaultAsync(item => item.Nombre == "Torneo Primavera");
+            if (competicion is null)
+            {
+                competicion = new Competicion(
+                    DateTime.Today.AddMonths(1),
+                    "Pista central",
+                    "Torneo Primavera",
+                    20,
+                    10,
+                    tenis.Id);
+                dbContext.Competiciones.Add(competicion);
+                await dbContext.SaveChangesAsync();
+            }
 
-alquiler.MaterialesAlquilados.Add(new MaterialAlquilado(1,"Sin observaciones",alquiler.IdAlquiler,material.IdMaterial,material.Precio));
+            var inscriptionExists = await dbContext.Inscripciones.AnyAsync(inscripcion =>
+                inscripcion.UserId == user.Id
+                && inscripcion.CompeticionesInscritas.Any(item => item.CompeticionId == competicion.Id));
+            if (!inscriptionExists)
+            {
+                var inscripcion = new Inscripcion(DateTime.Now, MetodoPago.Tarjeta, competicion.Precio, user)
+                {
+                    CompeticionesInscritas = new List<CompeticionInscrita>(),
+                    ClasesInscritas = new List<ClaseInscrita>()
+                };
+                inscripcion.CompeticionesInscritas.Add(
+                    new CompeticionInscrita(competicion.Id, 0, "Ningún problema físico")
+                    {
+                        Inscripcion = inscripcion,
+                        Competicion = competicion
+                    });
+                dbContext.Inscripciones.Add(inscripcion);
+                await dbContext.SaveChangesAsync();
+            }
+        }
 
-dbContext.Alquileres.Add(alquiler);
-}
+        // CU4
+        public static async Task SeedInscripcionClase(ApplicationDbContext dbContext, ApplicationUser user)
+        {
+            var tenis = await GetOrCreateTipoDeporte(dbContext, "Tenis");
+            var clase = await dbContext.ClasesDeportivas
+                .FirstOrDefaultAsync(item => item.Nombre == "Iniciacion al tenis");
+            if (clase is null)
+            {
+                clase = new ClaseDeportiva(
+                    "Iniciacion al tenis",
+                    "Clase basica",
+                    20,
+                    tenis.Id,
+                    DateTime.Now,
+                    "Pista tenis",
+                    "JuanDiego",
+                    "Avanzado",
+                    20,
+                    20);
+                dbContext.ClasesDeportivas.Add(clase);
+                await dbContext.SaveChangesAsync();
+            }
 
-dbContext.SaveChanges();
-}
-
-        //CU3
-        public static void SeedInscripcionCompeticion(ApplicationDbContext dbContext, ApplicationUser user)
-{
-TipoDeporte tenis;
-
-if (dbContext.TiposDeportes.FirstOrDefault(td => td.Nombre == "Tenis") == null)
-{
-tenis = new TipoDeporte("Tenis");
-
-dbContext.TiposDeportes.Add(tenis);
-dbContext.SaveChanges();
-}
-else
-{
-tenis = dbContext.TiposDeportes.First(td => td.Nombre == "Tenis");
-}
-
-if (dbContext.Competiciones.FirstOrDefault(c => c.Nombre == "Torneo Primavera") == null)
-{
-Competicion competicion = new Competicion( DateTime.Today.AddMonths(1), "Torneo Primavera", "Competición de iniciación", 20, 10, tenis.Id);
-
-dbContext.Competiciones.Add(competicion);
-dbContext.SaveChanges();
-}
-
-if (dbContext.Inscripciones.FirstOrDefault(i => i.Id == 1) == null)
-{
-var competicion = dbContext.Competiciones.First();
-
-Inscripcion inscripcion = new Inscripcion(DateTime.Now, MetodoPago.Tarjeta, 20, user);
-
-inscripcion.CompeticionesInscritas.Add(
-new CompeticionInscrita(
-competicion.Id,
-inscripcion.Id,
-"Ningún problema físico"
-)
-);
-
-dbContext.Inscripciones.Add(inscripcion);
-}
-
-dbContext.SaveChanges();
-}
-        //CU4
-        public static void SeedInscripcionClase(ApplicationDbContext dbContext, ApplicationUser user)
-{
-if (dbContext.ClasesDeportivas.FirstOrDefault(c => c.Nombre == "Iniciacion al tenis") == null)
-{
-var tipoDeporte = dbContext.TiposDeportes.First();
-
-var clase = new ClaseDeportiva("Iniciacion al tenis", "Clase basica", 20, tipoDeporte.Id, DateTime.Now, "Pista tenis", "JuanDiego", "Avanzado", 20, 20 );
-
-dbContext.ClasesDeportivas.Add(clase);
-}
-
-dbContext.SaveChanges();
-
-if (dbContext.Inscripciones.FirstOrDefault(i => i.Id == 2) == null)
-{
-var clase = dbContext.ClasesDeportivas.First();
-
-var inscripcion = new Inscripcion(DateTime.Now, MetodoPago.Transferencia, 10, user);
-
-inscripcion.ClasesInscritas.Add(new ClaseInscrita(clase.IdClaseDeportiva, inscripcion.Id, "Sin observaciones", 1, 10));
-
-dbContext.Inscripciones.Add(inscripcion);
-}
-
-dbContext.SaveChanges();
-}
-
-
-
-
-
-
+            var inscriptionExists = await dbContext.Inscripciones.AnyAsync(inscripcion =>
+                inscripcion.UserId == user.Id
+                && inscripcion.ClasesInscritas.Any(item => item.ClaseDeportivaId == clase.IdClaseDeportiva));
+            if (!inscriptionExists)
+            {
+                var inscripcion = new Inscripcion(DateTime.Now, MetodoPago.Transferencia, clase.PrecioUnitario, user)
+                {
+                    CompeticionesInscritas = new List<CompeticionInscrita>(),
+                    ClasesInscritas = new List<ClaseInscrita>()
+                };
+                inscripcion.ClasesInscritas.Add(
+                    new ClaseInscrita(clase.IdClaseDeportiva, 0, "Sin observaciones", 1, clase.PrecioUnitario)
+                    {
+                        Inscripcion = inscripcion,
+                        ClaseDeportiva = clase
+                    });
+                dbContext.Inscripciones.Add(inscripcion);
+                await dbContext.SaveChangesAsync();
+            }
+        }
     }
 }

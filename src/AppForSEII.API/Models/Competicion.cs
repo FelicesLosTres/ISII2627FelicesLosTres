@@ -26,6 +26,7 @@ namespace AppForSEII.API.Models
 
         [Required(ErrorMessage = "El precio es obligatorio.")]
         [Range(0.00, 99999, ErrorMessage = "El precio no puede ser negativo.")]
+        [Precision(18, 2)]
         public decimal Precio { get; set; }
 
         public IList<CompeticionInscrita> CompeticionesInscritas { get; set; }

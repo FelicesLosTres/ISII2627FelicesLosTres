@@ -90,7 +90,7 @@ using (var scope = app.Services.CreateScope()) {
 
 
         //it sees the database
-        SeedData.Initialize(db, scope.ServiceProvider, logger);
+        await SeedData.InitializeAsync(db, scope.ServiceProvider);
     }
     catch (Exception ex) {
         logger.LogError(ex, "An error occurred seeding the DB.");
@@ -108,11 +108,12 @@ if (app.Environment.IsDevelopment()) {
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapIdentityApi<ApplicationUser>();
 app.MapControllers();
 
 
 app.Run();
-
 
