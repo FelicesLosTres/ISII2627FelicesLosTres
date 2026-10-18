@@ -8,14 +8,20 @@ public class ApplicationUserDTO
     public ApplicationUserDTO()
     {
     }
-    public ApplicationUserDTO(string id, string? name, string? surname, string? userName, string? phoneNumber )
+    public ApplicationUserDTO(
+        string id,
+        string? name,
+        string? surname,
+        string? userName,
+        string? email,
+        string? phoneNumber)
     {
         Id = id;
         Name = name;
         Surname = surname;
         UserName = userName;
-        Email = userName;
-        PhoneNumber=phoneNumber;
+        Email = email;
+        PhoneNumber = phoneNumber;
     }
 
     [StringLength(50)]
@@ -27,10 +33,10 @@ public class ApplicationUserDTO
     [StringLength(50)]
     public string? Surname {get;set;}
 
-    [StringLength(50)]
+    [StringLength(256)]
     public string? UserName{get;set;}
 
-    [StringLength(50)]
+    [StringLength(256)]
     public string? Email{get;set;}
 
     [Phone]

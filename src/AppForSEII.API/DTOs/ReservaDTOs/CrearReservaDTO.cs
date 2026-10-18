@@ -1,42 +1,26 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace PabellonDeportivo.API.DTOs.ReservaDTOs
+namespace AppForSEII.API.DTOs.ReservaDTOs
 {
     public class CrearReservaDTO
     {
-        [Required(ErrorMessage = "El nombre es obligatorio")]
-        public string Nombre { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "Los apellidos son obligatorios")]
-        public string Apellidos { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "El DNI es obligatorio")]
-        [RegularExpression(@"^[0-9]{8}[A-Z]$")]
-        public string DNI { get; set; } = string.Empty;
-
-        [Required, EmailAddress]
+        [Required, EmailAddress(ErrorMessage = "Correo electrónico inválido.")]
         public string Email { get; set; } = string.Empty;
 
-        [Required, Phone]
-        public string Telefono { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "Seleccione un método de pago")]
-        public string MetodoPago { get; set; } = string.Empty; // "Bizum", "Tarjeta", etc.
-
-        [Required(ErrorMessage = "Introduzca los datos del pago (ej. nº tarjeta o móvil)")]
-        public string DatosPago { get; set; } = string.Empty;
+        [Required(ErrorMessage = "El método de pago es obligatorio.")]
+        public string MetodoPago { get; set; } = string.Empty;
 
         [Required]
-        [MinLength(1, ErrorMessage = "El carrito no puede estar vacío")]
+        [MinLength(1, ErrorMessage = "Debe seleccionar al menos una pista para reservar.")]
         public List<ItemReservaDTO> PistasSeleccionadas { get; set; } = new();
     }
 
     public class ItemReservaDTO
     {
-        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "La pista seleccionada no es válida.")]
         public int PistaId { get; set; }
 
-        [MaxLength(500)]
+        [StringLength(250, ErrorMessage = "Las observaciones no pueden superar los 250 caracteres.")]
         public string? Observaciones { get; set; }
     }
 }

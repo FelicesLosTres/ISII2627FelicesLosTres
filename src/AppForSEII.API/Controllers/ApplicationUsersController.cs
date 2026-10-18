@@ -28,7 +28,8 @@ namespace AppForSEII.API.Controllers
         public async Task<IActionResult> Index()
         {
             return Ok(await _context.ApplicationUsers
-            .Select(u=>new ApplicationUserDTO(u.Id, u.Name, u.Surname, u.UserName, u.PhoneNumber))
+            .Select(u => new ApplicationUserDTO(
+                u.Id, u.Name, u.Surname, u.UserName, u.Email, u.PhoneNumber))
             .ToListAsync());
         }
 
@@ -46,7 +47,8 @@ namespace AppForSEII.API.Controllers
 
             var applicationUserDTO = await _context.ApplicationUsers
                 .Where(u => u.Id == id)
-                .Select(u=>new ApplicationUserDTO(u.Id, u.Name, u.Surname, u.UserName, u.PhoneNumber))
+                .Select(u => new ApplicationUserDTO(
+                    u.Id, u.Name, u.Surname, u.UserName, u.Email, u.PhoneNumber))
                 .FirstOrDefaultAsync();
 
             if (applicationUserDTO == null)

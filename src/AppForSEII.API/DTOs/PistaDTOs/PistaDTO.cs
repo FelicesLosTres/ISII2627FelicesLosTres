@@ -1,26 +1,26 @@
-namespace PabellonDeportivo.API.DTOs.PistaDTOs
+namespace AppForSEII.API.DTOs.PistaDTOs
 {
     public class PistaDTO
     {
-        public int Id { get; set; }
-        public string Nombre { get; set; } = string.Empty;
-        public int Aforo { get; set; }
-        public string NombreDeporte { get; set; } = string.Empty; // "Aplanado" de la entidad Deporte
-        public decimal PrecioPorDia { get; set; }
+        public int IdPista { get; set; }
+        public string NombrePista { get; set; } = string.Empty;
+        public int NPersonas { get; set; }
+        public string TipoDeporte { get; set; } = string.Empty; // "Aplanado" de la entidad Deporte
+        public decimal Precio { get; set; }
 
         public override bool Equals(object? obj)
         {
             return obj is PistaDTO dto &&
-                   Id == dto.Id &&
-                   Nombre == dto.Nombre &&
-                   Aforo == dto.Aforo &&
-                   NombreDeporte == dto.NombreDeporte &&
-                   PrecioPorDia == dto.PrecioPorDia;
+                   IdPista == dto.IdPista &&
+                   NombrePista == dto.NombrePista &&
+                   NPersonas == dto.NPersonas &&
+                   TipoDeporte == dto.TipoDeporte &&
+                   Precio == dto.Precio;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Id, Nombre, Aforo, NombreDeporte, PrecioPorDia);
+            return HashCode.Combine(IdPista, NombrePista, NPersonas, TipoDeporte, Precio);
         }
     }
 }
