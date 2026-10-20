@@ -2,6 +2,14 @@ namespace AppForSEII.API.DTOs.ReservaDTOs
 {
     public class ReservaDetalleDTO
     {
+        public ReservaDetalleDTO(int idReserva, DateTime fechaReserva, decimal precioTotal, string v, string? name, string? surname, string? email, string? phoneNumber, List<PistaReservadaDetalleDTO> pistaReservadaDetalleDTOs)
+        {
+            IdReserva = idReserva;
+            FechaReserva = fechaReserva;
+            PrecioTotal = precioTotal;
+            Email = email;
+        }
+
         public int IdReserva { get; set; }
         public DateTime FechaReserva { get; set; }
         public decimal PrecioTotal { get; set; }

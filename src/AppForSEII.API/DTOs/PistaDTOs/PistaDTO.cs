@@ -11,16 +11,15 @@ namespace AppForSEII.API.DTOs.PistaDTOs
         public override bool Equals(object? obj)
         {
             return obj is PistaDTO dto &&
-                   IdPista == dto.IdPista &&
+                IdPista == dto.IdPista &&
                    NombrePista == dto.NombrePista &&
                    NPersonas == dto.NPersonas &&
                    TipoDeporte == dto.TipoDeporte &&
                    Precio == dto.Precio;
         }
-
         public override int GetHashCode()
         {
-            return HashCode.Combine(IdPista, NombrePista, NPersonas, TipoDeporte, Precio);
+            throw new NotImplementedException();
         }
     }
 }
