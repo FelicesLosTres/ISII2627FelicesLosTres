@@ -11,10 +11,10 @@ namespace AppForSEII.API.DTOs.MaterialDTOs
     public class MaterialDTO
     {
         //Constructores
-        public MovieForRentalDTO()
+        public MaterialDTO()
         {
         }
-        public MovieForRentalDTO(int idMaterial, string nombre, string tipoMaterial, string tipoDeporte, decimal precio, int cantidad)
+        public MaterialDTO(int idMaterial, string nombre, string tipoMaterial, string tipoDeporte, decimal precio, int cantidad)
         {
             IdMaterial = idMaterial;
             Nombre = nombre;
