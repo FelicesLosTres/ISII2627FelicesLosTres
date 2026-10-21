@@ -32,8 +32,8 @@ namespace AppForSEII.API.DTOs.MaterialDTOs
         public string Nombre { get; set; } = string.Empty;
 
 
-        public string TipoMaterial { get; set; } = string.Empty;
-        public string TipoDeporte { get; set; } = string.Empty; // "Aplanado" de la entidad Deporte
+        public string? TipoMaterial { get; set; } = string.Empty;
+        public string? TipoDeporte { get; set; } = string.Empty; // "Aplanado" de la entidad Deporte
 
         [DataType(System.ComponentModel.DataAnnotations.DataType.Currency)]//Lo que pone antes de .DataType es gen. por el entorno, puede no ser correcto (igual para .Display).
         [System.ComponentModel.DataAnnotations.Display(Name = "Price For Renting")]
