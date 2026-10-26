@@ -1,5 +1,4 @@
   using AppForSEII.API.DTOs.AlquilerDTOs;
-  using AppForSEII.API.DTOs.AlquilerItemDTOs;
   using Microsoft.AspNetCore.Http;
   using Microsoft.AspNetCore.Mvc;
 
@@ -30,14 +29,14 @@ namespace AppForSEII.API.Controllers
                  .Include(a => a.MaterialesAlquilados) //join table MaterialAlquilado
                     .ThenInclude(ri => ri.Material) //then join table Material
                         .ThenInclude(Material => Material.TipoMaterial) //then join table TipoMaterial
-             .Select(r => new AlquilerDetailDTO(a.IdAlquiler, a.AlquilerItems
-                        .Select(ri => new AlquilerItemDTO(ri.Material.IdMaterial,
-                                ri.Material.Nombre, ri.Material.TipoMaterial.NombreTipoMaterial,
-                                ri.Material.TipoDeporte.Nombre)).ToList(),
+             .Select(r => new AlquilerDetailDTO(a.IdAlquiler,
                     a.PrecioTotal, a.FechaAlquiler,
                     a.UsuarioDNI,
                     a.NombreUsuario, a.ApellidosUsuario,
-                    a.CorreoElectronicoUsuario, a.TelefonoUsuario))
+                    a.CorreoElectronicoUsuario, a.TelefonoUsuario, a.MetodoPago, a.AlquilerItems
+                        .Select(ri => new AlquilerItemDTO(ri.Material.IdMaterial,
+                                ri.Material.Nombre, ri.Material.TipoMaterial.NombreTipoMaterial,
+                                ri.Material.TipoDeporte.Nombre)).ToList()))
              .FirstOrDefaultAsync();
 
 
