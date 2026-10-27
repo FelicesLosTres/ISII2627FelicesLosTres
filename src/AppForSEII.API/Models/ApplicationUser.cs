@@ -8,13 +8,14 @@ public class ApplicationUser : IdentityUser
     public ApplicationUser()
     {
     }
-    public ApplicationUser(string id, string name, string surname, string userName)
+    public ApplicationUser(string id, string name, string surname, string userName, int telefonoUsuario)
     {
         Id = id;
         Name = name;
         Surname = surname;
         UserName = userName;
         Email = userName;
+        TelefonoUsuario = telefonoUsuario;
     }
 
     [StringLength(50)]
@@ -22,4 +23,7 @@ public class ApplicationUser : IdentityUser
 
     [StringLength(50)]
     public string? Surname {get;set;}
+
+    [Phone]
+    public int TelefonoUsuario {get; set;}
 }

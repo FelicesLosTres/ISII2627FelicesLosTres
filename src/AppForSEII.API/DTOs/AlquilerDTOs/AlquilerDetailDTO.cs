@@ -4,7 +4,7 @@ namespace AppForSEII.API.DTOs.AlquilerDTOs
     public class AlquilerDetailDTO : AlquilerForCreateDTO
     {
         //Constructor
-        public AlquilerDetailDTO(int idAlquiler, decimal precioTotal, DateTime fechaAlquiler, int usuarioDNI, string nombreUsuario, string apellidosUsuario,
+        public AlquilerDetailDTO(int idAlquiler, decimal precioTotal, DateTime fechaAlquiler, string usuarioDNI, string nombreUsuario, string apellidosUsuario,
                     string correoElectronicoUsuario, int telefonoUsuario,
                     MetodoPago metodoPago, IList<AlquilerItemDTO> materialesAlquilados)
             //Para llamar al constructor de AlquilerForCreateDTO. No usado porque aún no está implementado
@@ -39,7 +39,7 @@ namespace AppForSEII.API.DTOs.AlquilerDTOs
 
         public IList<AlquilerItemDTO> MaterialesAlquilados {get; set;} = new List<AlquilerItemDTO>();
 
-        public int UsuarioDNI {get; set;}
+        public string UsuarioDNI {get; set;}
         public string NombreUsuario {get; set;}
         public string ApellidosUsuario{get; set;}
 

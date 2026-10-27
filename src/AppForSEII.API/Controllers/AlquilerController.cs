@@ -29,11 +29,14 @@ namespace AppForSEII.API.Controllers
                  .Include(a => a.MaterialesAlquilados) //join table MaterialAlquilado
                     .ThenInclude(ri => ri.Material) //then join table Material
                         .ThenInclude(Material => Material.TipoMaterial) //then join table TipoMaterial
-             .Select(r => new AlquilerDetailDTO(a.IdAlquiler,
+                .Include(a => a.MaterialesAlquilados)
+                    .ThenInclude(ri => ri.Material)
+                        .ThenInclude(Material => Material. TipoDeporte)
+             .Select(a => new AlquilerDetailDTO(a.IdAlquiler,
                     a.PrecioTotal, a.FechaAlquiler,
-                    a.UsuarioDNI,
-                    a.NombreUsuario, a.ApellidosUsuario,
-                    a.CorreoElectronicoUsuario, a.TelefonoUsuario, a.MetodoPago, a.AlquilerItems
+                    a.ApplicationUser.Id,
+                    a.ApplicationUser.Name, a.ApplicationUser.Surname,
+                    a.ApplicationUser.Email, a.ApplicationUser.TelefonoUsuario, a.MetodoPago, a.MaterialesAlquilados
                         .Select(ri => new AlquilerItemDTO(ri.Material.IdMaterial,
                                 ri.Material.Nombre, ri.Material.TipoMaterial.NombreTipoMaterial,
                                 ri.Material.TipoDeporte.Nombre)).ToList()))
