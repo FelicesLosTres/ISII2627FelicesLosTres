@@ -14,7 +14,8 @@ public class ApplicationUserDTO
         string? surname,
         string? userName,
         string? email,
-        string? phoneNumber)
+        string? phoneNumber,
+        string? dni)
     {
         Id = id;
         Name = name;
@@ -22,8 +23,10 @@ public class ApplicationUserDTO
         UserName = userName;
         Email = email;
         PhoneNumber = phoneNumber;
+        DNI = dni;
     }
 
+    [Key]
     [StringLength(50)]
     public string? Id {get;set;}
 
@@ -42,6 +45,10 @@ public class ApplicationUserDTO
     [Phone]
     public string? PhoneNumber{ get; set;}
 
+    [StringLength(9)]
+    [RegularExpression(@"^[0-9]{8}[A-Za-z]$")]
+    public string? DNI {get; set;}
+
     public override bool Equals(object? obj)
     {
         return obj is ApplicationUserDTO dTO &&
@@ -50,11 +57,12 @@ public class ApplicationUserDTO
                Surname == dTO.Surname &&
                UserName == dTO.UserName &&
                Email == dTO.Email &&
-               PhoneNumber == dTO.PhoneNumber;
+               PhoneNumber == dTO.PhoneNumber &&
+               DNI == dTO.DNI;
     }
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(Id, Name, Surname, UserName, Email, PhoneNumber);
+        return HashCode.Combine(Id, Name, Surname, UserName, Email, PhoneNumber, DNI);
     }
 }
