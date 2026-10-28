@@ -34,7 +34,7 @@ namespace AppForSEII.API.Controllers
                         .ThenInclude(Material => Material. TipoDeporte)
              .Select(a => new AlquilerDetailDTO(a.IdAlquiler,
                     a.PrecioTotal, a.FechaAlquiler,
-                    a.ApplicationUser.Id,
+                    a.ApplicationUser.DNI,
                     a.ApplicationUser.Name, a.ApplicationUser.Surname,
                     a.ApplicationUser.Email, a.ApplicationUser.TelefonoUsuario, a.MetodoPago, a.MaterialesAlquilados
                         .Select(ri => new AlquilerItemDTO(ri.Material.IdMaterial,

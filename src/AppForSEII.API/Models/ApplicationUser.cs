@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
 
 namespace AppForSEII.API.Models;
 
@@ -8,7 +9,7 @@ public class ApplicationUser : IdentityUser
     public ApplicationUser()
     {
     }
-    public ApplicationUser(string id, string name, string surname, string userName, int telefonoUsuario)
+    public ApplicationUser(string id, string name, string surname, string userName, int telefonoUsuario, string dni)
     {
         Id = id;
         Name = name;
@@ -16,6 +17,7 @@ public class ApplicationUser : IdentityUser
         UserName = userName;
         Email = userName;
         TelefonoUsuario = telefonoUsuario;
+        DNI = dni;
     }
 
     [StringLength(50)]
@@ -26,4 +28,8 @@ public class ApplicationUser : IdentityUser
 
     [Phone]
     public int TelefonoUsuario {get; set;}
+
+    [StringLength(9)]
+    [RegularExpression(@"^[0-9]{8}[A-Za-z]$")]
+    public string? DNI {get; set;}
 }

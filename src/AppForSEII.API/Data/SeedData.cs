@@ -26,7 +26,7 @@ namespace AppForSEII.API.Data
             var administrator = await userManager.FindByEmailAsync(AdminEmail);
             if (administrator is null)
             {
-                administrator = new ApplicationUser("1", "Elena", "Navarro Martínez", AdminEmail)
+                administrator = new ApplicationUser("1", "Elena", "Navarro Martínez", AdminEmail, 123456789, "12345678E")
                 {
                     EmailConfirmed = true
                 };
@@ -39,7 +39,7 @@ namespace AppForSEII.API.Data
             var customer = await userManager.FindByEmailAsync(CustomerEmail);
             if (customer is null)
             {
-                customer = new ApplicationUser("3", "Peter", "Jackson", CustomerEmail)
+                customer = new ApplicationUser("3", "Peter", "Jackson", CustomerEmail, 987654321, "12345678P")
                 {
                     EmailConfirmed = true
                 };
