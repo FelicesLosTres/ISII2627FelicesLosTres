@@ -231,11 +231,16 @@ namespace AppForSEII.API.Data
                     tenis.Id,
                     DateTime.Now,
                     "Pista tenis",
-                    "JuanDiego",
+                    "Juan Diego",
                     "Avanzado",
                     20,
                     20);
                 dbContext.ClasesDeportivas.Add(clase);
+                await dbContext.SaveChangesAsync();
+            }
+            else
+            {
+                clase.FechaHora = DateTime.Now;
                 await dbContext.SaveChangesAsync();
             }
 
