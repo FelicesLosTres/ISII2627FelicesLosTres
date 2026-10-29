@@ -24,7 +24,7 @@ public int NPersonas { get; set; }
 [Range(0.01, 99999,
 ErrorMessage = "El precio debe ser mayor que 0.")]
 [Precision(18, 2)]
-public decimal Precio { get; set; }
+public double Precio { get; set; }
 
 [Required(ErrorMessage = "El stock es obligatorio.")]
 [Range(0, 1000,
@@ -50,7 +50,7 @@ public Pista()
 public Pista(
 string nombrePista,
 int nPersonas,
-decimal precio,
+double precio,
 int stock,
 int idTipoDeporte
 )

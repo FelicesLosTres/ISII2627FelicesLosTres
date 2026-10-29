@@ -14,7 +14,7 @@ public int Cantidad { get; set; }
 [Required(ErrorMessage = "El precio es obligatorio.")]
 [Range(0.01, 99999, ErrorMessage = "El precio debe ser mayor que 0.")]
 [Precision(18, 2)]
-public decimal Precio { get; set; }
+public double Precio { get; set; }
 
 [Required]
 public int IdPista { get; set; }
@@ -38,7 +38,7 @@ public PistaReservada()
 }
 
 // Constructor simple
-public PistaReservada( int cantidad, decimal precio, int idPista, int idReserva)
+public PistaReservada( int cantidad, double precio, int idPista, int idReserva)
 {
 Cantidad = cantidad;
 Precio = precio;
