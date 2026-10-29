@@ -6,7 +6,7 @@ namespace AppForSEII.API.DTOs.PistaDTOs
         public string NombrePista { get; set; } = string.Empty;
         public int NPersonas { get; set; }
         public string TipoDeporte { get; set; } = string.Empty; // "Aplanado" de la entidad Deporte
-        public decimal Precio { get; set; }
+        public double Precio { get; set; }
 
         public override bool Equals(object? obj)
         {
