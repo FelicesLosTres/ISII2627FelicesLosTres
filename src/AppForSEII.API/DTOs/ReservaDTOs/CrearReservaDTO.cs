@@ -4,13 +4,14 @@ namespace AppForSEII.API.DTOs.ReservaDTOs
 {
     public class CrearReservaDTO
     {
-        public CrearReservaDTO(IList<ReservaItemDTO> pistasreservadas, string nombreapellidocliente, string correo, int telefono, MetodoPago metodopago)
+        public CrearReservaDTO(IList<ReservaItemDTO> pistasreservadas, string nombre, string apellido, string correo, string telefono, MetodoPago metodopago)
         {
-            PistasSeleccionadas = pistasreservadas;
-            NombreApellidosCliente = nombreapellidocliente;
-            CorreoCliente = correo;
-            numTelefono = telefono;
+            NombreCliente = nombre ?? throw new ArgumentNullException(nameof(NombreCliente));
+            ApellidosCliente = apellido ?? throw new ArgumentNullException(nameof(ApellidosCliente));
+            CorreoCliente = correo ?? throw new ArgumentNullException(nameof(CorreoCliente));
+            numTelefono = telefono ?? throw new ArgumentNullException(nameof(numTelefono));
             metodo = metodopago;
+            PistasSeleccionadas = pistasreservadas ?? throw new ArgumentNullException(nameof(PistasSeleccionadas));
 
         }
 
@@ -21,15 +22,21 @@ namespace AppForSEII.API.DTOs.ReservaDTOs
 
         public IList<ReservaItemDTO> PistasSeleccionadas { get;set; } = new List<ReservaItemDTO>();
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Porfavor, escriba su Nombre y Apellidos")]
-        [StringLength(50, MinimumLength = 10, ErrorMessage = "El nombre y apellidos tienen que tener como mínimo 10 caracteres")]
-        public string NombreApellidosCliente { get; set; }= "Peter Jackson";
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Porfavor, escriba su Nombre")]
+        [StringLength(50, MinimumLength = 1, ErrorMessage = "El nombre tiene que tener como mínimo 1 caracteres")]
+        public string NombreCliente { get; set; }= "Peter Jackson";
+
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Porfavor, escriba sus Apellidos")]
+        [StringLength(50, MinimumLength = 1, ErrorMessage = "Los apellidos tienen que tener como mínimo 1 caracteres")]
+        public string ApellidosCliente { get; set; }= "Jackson";
+
+
 
         [Required]
         [EmailAddress]
         public string CorreoCliente { get;set; } = "peter.jackson@uclm.es";
 
-        public int numTelefono { get;set; }
+        public string numTelefono { get;set; } = "234";
 
 
         [Required]
@@ -52,7 +59,8 @@ namespace AppForSEII.API.DTOs.ReservaDTOs
         {
             return obj is CrearReservaDTO dTO &&
             PistasSeleccionadas.SequenceEqual(dTO.PistasSeleccionadas) &&
-            NombreApellidosCliente == dTO.NombreApellidosCliente &&
+            NombreCliente == dTO.NombreCliente &&
+            ApellidosCliente == dTO.ApellidosCliente &&
             CorreoCliente == dTO.CorreoCliente &&
             numTelefono == dTO.numTelefono &&
             metodo == dTO.metodo &&
