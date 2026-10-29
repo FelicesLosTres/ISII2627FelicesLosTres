@@ -20,17 +20,17 @@ public decimal Precio { get; set; }
 public int IdPista { get; set; }
 
 [ForeignKey(nameof(IdPista))]
-public Pista? Pista { get; set; }
+public Pista Pista { get; set; } = new Pista() ;
 
 [Required]
 public int IdReserva { get; set; }
 
 [ForeignKey(nameof(IdReserva))]
-public Reserva? Reserva { get; set; }
+public Reserva Reserva { get; set; } = new Reserva() ;
 
 
 [StringLength(250, ErrorMessage = "Las observaciones no pueden superar los 250 caracteres.")]
-public string Observaciones { get; set; }
+public string? Observaciones { get; set; }
 
 // Constructor vacío
 public PistaReservada()
