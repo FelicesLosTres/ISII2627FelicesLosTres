@@ -23,144 +23,94 @@ namespace AppForSEII.API.Controllers
         [Route("[action]")]
         [ProducesResponseType(typeof(ReservaDetalleDTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<ActionResult<ReservaDetalleDTO>> GetReserva(int idReserva)
+        public async Task<ActionResult> GetReserva(int idReserva)
         { 
             var reserva = await _context.Reservas
                .Where(r => r.IdReserva == idReserva)
                    .Include(r => r.PistasReservadas) 
                       .ThenInclude(rp => rp.Pista)
                           .ThenInclude(pista => pista.TipoDeporte)
-               .Select(r => new ReservaDetalleDTO(r.IdReserva, r.FechaReserva, r.PrecioTotal, r.MetodoPago.ToString(),
-                      r.ApplicationUser.Name, r.ApplicationUser.Surname, r.ApplicationUser.Email, r.ApplicationUser.PhoneNumber,
-                      r.PistasReservadas.Select(pr => new PistaReservadaDetalleDTO
-                      {
-                          PistaId = pr.IdPista,
-                          NombrePista = pr.Pista.NombrePista,
-                          NombreDeporte = pr.Pista.TipoDeporte.Nombre,
-                          Aforo = pr.Pista.NPersonas,
-                          Precio = pr.Precio,
-                          Observaciones = pr.Observaciones
-                      }).ToList()))
-               .FirstOrDefaultAsync();
+               .Select(r => new ReservaDetalleDTO(r.IdReserva, r.FechaReserva, r.ApplicationUser.Name, r.ApplicationUser.Surname,
+                      r.ApplicationUser.Email, r.ApplicationUser.PhoneNumber, r.PrecioTotal, r.MetodoPago, 
+                      r.PistasReservadas
+                      .Select(pr => new ReservaItemDTO(
+                          pr.Pista.NombrePista,
+                          pr.Pista.TipoDeporte.Nombre,
+                          pr.Precio,
+                          pr.Pista.NPersonas,
+                          pr.Observaciones)).ToList<ReservaItemDTO>())).FirstOrDefaultAsync();
             if (reserva == null)
             {
                 _logger.LogWarning("Reserva con IdReserva={IdReserva} no encontrada.", idReserva);
-                return NotFound($"No existe ninguna reserva con la clave {idReserva}.");
+                return NotFound();
             }
 
             return Ok(reserva);
         }
 
-        // /// <summary>
-        // /// Finaliza y guarda una reserva de pistas (Pasos 5 y 6)
-        // /// POST: api/reservas
-        // /// </summary>
-        // [HttpPost]
-        // [ProducesResponseType(typeof(ReservaDetalleDTO), (int)HttpStatusCode.Created)]
-        // [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-        // public async Task<ActionResult<ReservaDetalleDTO>> FinalizarReserva(
-        //     [FromBody] CrearReservaDTO dto,
-        //     CancellationToken cancellationToken)
-        // {
-        //     if (dto.PistasSeleccionadas == null || !dto.PistasSeleccionadas.Any())
-        //     {
-        //         return BadRequest("No se ha seleccionado ninguna pista para reservar.");
-        //     }
 
-        //     var pistasIds = dto.PistasSeleccionadas.Select(p => p.PistaId).Distinct().ToList();
-        //     if (pistasIds.Count != dto.PistasSeleccionadas.Count)
-        //     {
-        //         return BadRequest("No se puede reservar la misma pista más de una vez.");
-        //     }
+        [HttpPost]
+        [Route("[action]")]
+        [ProducesResponseType(typeof(ReservaDetalleDTO), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Conflict)]
+        public async Task<ActionResult> CrearReserva(CrearReservaDTO dto)
+        {
+            if (dto.PistasSeleccionadas.Count == 0)
+            {
+                ModelState.AddModelError("PistasSeleccionadas", "Error! Debes seleccionar almenos una pista para ser reservada.");
+            }
 
-        //     var pistasBD = await _context.Pistas
-        //         .AsNoTracking()
-        //         .Include(p => p.TipoDeporte)
-        //         .Where(p => pistasIds.Contains(p.IdPista))
-        //         .ToListAsync(cancellationToken);
+            var usuario = _context.ApplicationUsers.FirstOrDefault(au => au.Email == dto.CorreoCliente);
+            if (usuario == null)
+            ModelState.AddModelError("ReservaApplicationuser", "Error! El usuario no está registrado");
 
-        //     if (pistasBD.Count != pistasIds.Count)
-        //     {
-        //         return BadRequest("Alguna de las pistas seleccionadas no existe en la base de datos.");
-        //     }
+            if (ModelState.ErrorCount > 0)
+            return BadRequest(new ValidationProblemDetails(ModelState));
 
-        //     var usuario = await _context.Users
-        //         .FirstOrDefaultAsync(
-        //             u => u.NormalizedEmail == dto.Email.ToUpperInvariant(),
-        //             cancellationToken);
+            var PistasNombres = dto.PistasSeleccionadas.Select(ps => ps.NombrePista).ToList<string>();
+            var pistas = _context.Pistas.Include(p => p.PistasReservadas)
+            .ThenInclude(ps => ps.Reserva)
+            .Where(p => PistasNombres.Contains(p.NombrePista))
+            .ToList();
 
-        //     if (usuario == null)
-        //     {
-        //         return BadRequest("El usuario no está registrado en el sistema.");
-        //     }
+            Reserva reserva = new Reserva(DateTime.Now, (MetodoPago)dto.metodo, usuario, new List<PistaReservada>());
+            foreach(var item in dto.PistasSeleccionadas)
+            {
+                var pista = pistas.FirstOrDefault(p => p.NombrePista == item.NombrePista);
+                if ((pista == null))
+                {
+                    ModelState.AddModelError("PistasReservadas", $"Error! La pista llamada '{item.NombrePista}' no está disponible para ser reservada");
 
-        //     var precioTotal = pistasBD.Sum(p => p.Precio);
+                }
+                else
+                {
+                    reserva.PistasReservadas.Add(new PistaReservada(1, pista.Precio, pista.IdPista, reserva.IdReserva));
+                    item.Precio = pista.Precio;
+                }
+            }
+            reserva.PrecioTotal = reserva.PistasReservadas.Sum(pr => pr.Precio);
+            if (ModelState.ErrorCount > 0)
+            {
+                return BadRequest(new ValidationProblemDetails(ModelState));
+            }
 
-        //     if (!Enum.TryParse<MetodoPago>(dto.MetodoPago, true, out var metodoPagoEnum))
-        //     {
-        //         return BadRequest($"Método de pago '{dto.MetodoPago}' no válido.");
-        //     }
+            _context.Add(reserva);
 
-        //     var nuevaReserva = new Reserva
-        //     {
-        //         FechaReserva = DateTime.Now,
-        //         PrecioTotal = precioTotal,
-        //         MetodoPago = metodoPagoEnum,
-        //         UserId = usuario.Id,
-        //         ApplicationUser = usuario,
-        //         PistasReservadas = new List<PistaReservada>()
-        //     };
+            try {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                ModelState.AddModelError("reserva", $"Error! Ha habido un error a la hora de hacer la reserva");
+                return Conflict("Error" + ex.Message);
 
-        //     foreach (var item in dto.PistasSeleccionadas)
-        //     {
-        //         var pistaBD = pistasBD.First(p => p.IdPista == item.PistaId);
+            }
+            var reservaDetail = new ReservaDetalleDTO(reserva.IdReserva, reserva.FechaReserva, usuario.Name, usuario.Surname, usuario.Email, usuario.PhoneNumber , reserva.PrecioTotal, (MetodoPago)dto.metodo, (IList<ReservaItemDTO>)dto.PistasSeleccionadas);
+            return CreatedAtAction("GetReserva", new { id = reserva.IdReserva }, reservaDetail);
 
-        //         nuevaReserva.PistasReservadas.Add(new PistaReservada
-        //         {
-        //             IdPista = pistaBD.IdPista,
-        //             Precio = pistaBD.Precio,
-        //             Cantidad = 1,
-        //             Observaciones = item.Observaciones ?? string.Empty
-        //         });
-        //     }
+        }
 
-        //     try
-        //     {
-        //         await _context.Reservas.AddAsync(nuevaReserva, cancellationToken);
-        //         await _context.SaveChangesAsync(cancellationToken);
-        //     }
-        //     catch (OperationCanceledException)
-        //     {
-        //         throw;
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         _logger.LogError(ex, "Error al guardar la reserva en la BD.");
-        //         return StatusCode(500, "Error interno del servidor al procesar la reserva.");
-        //     }
-
-        //     var respuestaDTO = new ReservaDetalleDTO
-        //     {
-        //         IdReserva = nuevaReserva.IdReserva,
-        //         FechaReserva = nuevaReserva.FechaReserva,
-        //         PrecioTotal = nuevaReserva.PrecioTotal,
-        //         MetodoPago = nuevaReserva.MetodoPago.ToString(),
-        //         NombreCliente = usuario.Name ?? string.Empty,
-        //         ApellidosCliente = usuario.Surname ?? string.Empty,
-        //         Email = usuario.Email ?? string.Empty,
-        //         Telefono = usuario.PhoneNumber ?? string.Empty,
-        //         PistasReservadas = nuevaReserva.PistasReservadas.Select(pr => new PistaReservadaDetalleDTO
-        //         {
-        //             PistaId = pr.IdPista,
-        //             NombrePista = pistasBD.First(p => p.IdPista == pr.IdPista).NombrePista,
-        //             NombreDeporte = pistasBD.First(p => p.IdPista == pr.IdPista).TipoDeporte?.Nombre ?? string.Empty,
-        //             Aforo = pistasBD.First(p => p.IdPista == pr.IdPista).NPersonas,
-        //             Precio = pr.Precio,
-        //             Observaciones = pr.Observaciones
-        //         }).ToList()
-        //     };
-
-        //     return CreatedAtAction(nameof(GetReservaById), new { idReserva = nuevaReserva.IdReserva }, respuestaDTO);
-        // }
     }
 }

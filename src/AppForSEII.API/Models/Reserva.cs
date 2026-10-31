@@ -43,13 +43,14 @@ public Reserva()
 // Constructor simple
 public Reserva(
 DateTime fechaReserva,
-MetodoPago metodoPago, ApplicationUser applicationUser)
+MetodoPago metodoPago, ApplicationUser applicationUser, IList<PistaReservada> pistasreservadas)
 {
 FechaReserva = fechaReserva;
 PrecioTotal = PistasReservadas.Sum(pr => pr.Precio);
 MetodoPago = metodoPago;
 ApplicationUser = applicationUser;
 UserId = applicationUser.Id;
+PistasReservadas = pistasreservadas;
 }
 }
 }
