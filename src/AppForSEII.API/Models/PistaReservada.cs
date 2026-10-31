@@ -14,23 +14,23 @@ public int Cantidad { get; set; }
 [Required(ErrorMessage = "El precio es obligatorio.")]
 [Range(0.01, 99999, ErrorMessage = "El precio debe ser mayor que 0.")]
 [Precision(18, 2)]
-public decimal Precio { get; set; }
+public double Precio { get; set; }
 
 [Required]
 public int IdPista { get; set; }
 
 [ForeignKey(nameof(IdPista))]
-public Pista? Pista { get; set; }
+public Pista Pista { get; set; } = new Pista() ;
 
 [Required]
 public int IdReserva { get; set; }
 
 [ForeignKey(nameof(IdReserva))]
-public Reserva? Reserva { get; set; }
+public Reserva Reserva { get; set; } = new Reserva() ;
 
 
 [StringLength(250, ErrorMessage = "Las observaciones no pueden superar los 250 caracteres.")]
-public string Observaciones { get; set; }
+public string? Observaciones { get; set; }
 
 // Constructor vacío
 public PistaReservada()
@@ -38,7 +38,7 @@ public PistaReservada()
 }
 
 // Constructor simple
-public PistaReservada( int cantidad, decimal precio, int idPista, int idReserva)
+public PistaReservada( int cantidad, double precio, int idPista, int idReserva)
 {
 Cantidad = cantidad;
 Precio = precio;

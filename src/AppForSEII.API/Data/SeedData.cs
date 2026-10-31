@@ -1,3 +1,9 @@
+using Microsoft.AspNetCore.Identity;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
 namespace AppForSEII.API.Data
 {
     public class SeedData
@@ -13,16 +19,18 @@ namespace AppForSEII.API.Data
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
+            // Crear roles
             foreach (var roleName in roles)
             {
                 if (!await roleManager.RoleExistsAsync(roleName))
                 {
                     EnsureSucceeded(
                         await roleManager.CreateAsync(new IdentityRole(roleName)),
-                        $"creating role '{roleName}'");
+                        $"Creating role '{roleName}'");
                 }
             }
 
+            // Crear administrador
             var administrator = await userManager.FindByEmailAsync(AdminEmail);
             if (administrator is null)
             {
@@ -32,10 +40,12 @@ namespace AppForSEII.API.Data
                 };
                 EnsureSucceeded(
                     await userManager.CreateAsync(administrator, "Password1234%"),
-                    $"creating user '{AdminEmail}'");
+                    $"Creating user '{AdminEmail}'");
             }
+
             await EnsureInRoleAsync(userManager, administrator, roles[0]);
 
+            // Crear cliente
             var customer = await userManager.FindByEmailAsync(CustomerEmail);
             if (customer is null)
             {
@@ -45,14 +55,25 @@ namespace AppForSEII.API.Data
                 };
                 EnsureSucceeded(
                     await userManager.CreateAsync(customer, "OtherPass12$"),
-                    $"creating user '{CustomerEmail}'");
+                    $"Creating user '{CustomerEmail}'");
             }
+
             await EnsureInRoleAsync(userManager, customer, roles[2]);
 
-            await SeedReservaPista(dbContext, customer);
+            // Inicializar datos de ejemplo
+            await SeedReservaPista(dbContext, administrator);
             await SeedAlquilerMaterial(dbContext, customer);
             await SeedInscripcionCompeticion(dbContext, customer);
             await SeedInscripcionClase(dbContext, customer);
+        }
+
+        private static void EnsureSucceeded(IdentityResult result, string operation)
+        {
+            if (!result.Succeeded)
+            {
+                var errors = string.Join("; ", result.Errors.Select(error => error.Description));
+                throw new InvalidOperationException($"Identity failed while {operation}: {errors}");
+            }
         }
 
         private static async Task EnsureInRoleAsync(
@@ -64,16 +85,7 @@ namespace AppForSEII.API.Data
             {
                 EnsureSucceeded(
                     await userManager.AddToRoleAsync(user, role),
-                    $"adding user '{user.Email}' to role '{role}'");
-            }
-        }
-
-        private static void EnsureSucceeded(IdentityResult result, string operation)
-        {
-            if (!result.Succeeded)
-            {
-                var errors = string.Join("; ", result.Errors.Select(error => error.Description));
-                throw new InvalidOperationException($"Identity failed while {operation}: {errors}");
+                    $"Adding user '{user.Email}' to role '{role}'");
             }
         }
 
@@ -97,32 +109,12 @@ namespace AppForSEII.API.Data
         // CU1
         public static async Task SeedReservaPista(ApplicationDbContext dbContext, ApplicationUser user)
         {
-            var padel = await GetOrCreateTipoDeporte(dbContext, "Padel");
-            var pista = await dbContext.Pistas
-                .FirstOrDefaultAsync(item => item.NombrePista == "Pista Padel 1");
-            if (pista is null)
+            var existingReserva = await dbContext.Reservas.FirstOrDefaultAsync(p => p.IdReserva == 1);
+            if (existingReserva is null)
             {
-                pista = new Pista("Pista Padel 1", 4, 15, 10, padel.Id);
-                dbContext.Pistas.Add(pista);
-                await dbContext.SaveChangesAsync();
-            }
-
-            var reservaExists = await dbContext.Reservas.AnyAsync(reserva =>
-                reserva.UserId == user.Id
-                && reserva.PistasReservadas.Any(item => item.IdPista == pista.IdPista));
-            if (!reservaExists)
-            {
-                var reserva = new Reserva(DateTime.Now, 15, MetodoPago.Bizum, user)
-                {
-                    PistasReservadas = new List<PistaReservada>
-                    {
-                        new(1, pista.Precio, pista.IdPista, 0)
-                        {
-                            Pista = pista,
-                            Observaciones = string.Empty
-                        }
-                    }
-                };
+                var pista = await dbContext.Pistas.FirstAsync();
+                var reserva = new Reserva(DateTime.Now, MetodoPago.Bizum, user, new List<PistaReservada>());
+                reserva.PistasReservadas.Add(new PistaReservada(1, 10, pista.IdPista, reserva.IdReserva));
                 dbContext.Reservas.Add(reserva);
                 await dbContext.SaveChangesAsync();
             }
@@ -134,6 +126,7 @@ namespace AppForSEII.API.Data
             var tenis = await GetOrCreateTipoDeporte(dbContext, "Tenis");
             var tipoMaterial = await dbContext.TiposMateriales
                 .FirstOrDefaultAsync(tipo => tipo.NombreTipoMaterial == "Raqueta");
+
             if (tipoMaterial is null)
             {
                 tipoMaterial = new TipoMaterial("Raqueta");
@@ -143,6 +136,7 @@ namespace AppForSEII.API.Data
 
             var material = await dbContext.Materiales
                 .FirstOrDefaultAsync(item => item.Nombre == "Raqueta Wilson");
+
             if (material is null)
             {
                 material = new Material(3, "Raqueta Wilson", 15)
@@ -159,20 +153,28 @@ namespace AppForSEII.API.Data
             var alquilerExists = await dbContext.Alquileres.AnyAsync(alquiler =>
                 alquiler.UserId == user.Id
                 && alquiler.MaterialesAlquilados.Any(item => item.IdMaterial == material.IdMaterial));
+
             if (!alquilerExists)
             {
-                var alquiler = new Alquiler(DateTime.Now, MetodoPago.Tarjeta, material.Precio, user)
+                try
                 {
-                    MaterialesAlquilados = new List<MaterialAlquilado>()
-                };
-                alquiler.MaterialesAlquilados.Add(
-                    new MaterialAlquilado(1, "Sin observaciones", 0, material.IdMaterial, material.Precio)
+                    var alquiler = new Alquiler(DateTime.Now, MetodoPago.Tarjeta, material.Precio, user)
                     {
-                        Alquiler = alquiler,
-                        Material = material
-                    });
-                dbContext.Alquileres.Add(alquiler);
-                await dbContext.SaveChangesAsync();
+                        MaterialesAlquilados = new List<MaterialAlquilado>()
+                    };
+                    alquiler.MaterialesAlquilados.Add(
+                        new MaterialAlquilado(1, "Sin observaciones", 0, material.IdMaterial, material.Precio)
+                        {
+                            Alquiler = alquiler,
+                            Material = material
+                        });
+                    dbContext.Alquileres.Add(alquiler);
+                    await dbContext.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException($"Error al crear alquiler: {ex.Message}");
+                }
             }
         }
 
@@ -182,6 +184,7 @@ namespace AppForSEII.API.Data
             var tenis = await GetOrCreateTipoDeporte(dbContext, "Tenis");
             var competicion = await dbContext.Competiciones
                 .FirstOrDefaultAsync(item => item.Nombre == "Torneo Primavera");
+
             if (competicion is null)
             {
                 competicion = new Competicion(
@@ -198,21 +201,29 @@ namespace AppForSEII.API.Data
             var inscriptionExists = await dbContext.Inscripciones.AnyAsync(inscripcion =>
                 inscripcion.UserId == user.Id
                 && inscripcion.CompeticionesInscritas.Any(item => item.CompeticionId == competicion.Id));
+
             if (!inscriptionExists)
             {
-                var inscripcion = new Inscripcion(DateTime.Now, MetodoPago.Tarjeta, competicion.Precio, user)
+                try
                 {
-                    CompeticionesInscritas = new List<CompeticionInscrita>(),
-                    ClasesInscritas = new List<ClaseInscrita>()
-                };
-                inscripcion.CompeticionesInscritas.Add(
-                    new CompeticionInscrita(competicion.Id, 0, "Ningún problema físico")
+                    var inscripcion = new Inscripcion(DateTime.Now, MetodoPago.Tarjeta, competicion.Precio, user)
                     {
-                        Inscripcion = inscripcion,
-                        Competicion = competicion
-                    });
-                dbContext.Inscripciones.Add(inscripcion);
-                await dbContext.SaveChangesAsync();
+                        CompeticionesInscritas = new List<CompeticionInscrita>(),
+                        ClasesInscritas = new List<ClaseInscrita>()
+                    };
+                    inscripcion.CompeticionesInscritas.Add(
+                        new CompeticionInscrita(competicion.Id, 0, "Ningún problema físico")
+                        {
+                            Inscripcion = inscripcion,
+                            Competicion = competicion
+                        });
+                    dbContext.Inscripciones.Add(inscripcion);
+                    await dbContext.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException($"Error al crear inscripción de competición: {ex.Message}");
+                }
             }
         }
 
@@ -222,6 +233,7 @@ namespace AppForSEII.API.Data
             var tenis = await GetOrCreateTipoDeporte(dbContext, "Tenis");
             var clase = await dbContext.ClasesDeportivas
                 .FirstOrDefaultAsync(item => item.Nombre == "Iniciacion al tenis");
+
             if (clase is null)
             {
                 clase = new ClaseDeportiva(
@@ -247,21 +259,29 @@ namespace AppForSEII.API.Data
             var inscriptionExists = await dbContext.Inscripciones.AnyAsync(inscripcion =>
                 inscripcion.UserId == user.Id
                 && inscripcion.ClasesInscritas.Any(item => item.ClaseDeportivaId == clase.IdClaseDeportiva));
+
             if (!inscriptionExists)
             {
-                var inscripcion = new Inscripcion(DateTime.Now, MetodoPago.Transferencia, clase.PrecioUnitario, user)
+                try
                 {
-                    CompeticionesInscritas = new List<CompeticionInscrita>(),
-                    ClasesInscritas = new List<ClaseInscrita>()
-                };
-                inscripcion.ClasesInscritas.Add(
-                    new ClaseInscrita(clase.IdClaseDeportiva, 0, "Sin observaciones", 1, clase.PrecioUnitario)
+                    var inscripcion = new Inscripcion(DateTime.Now, MetodoPago.Transferencia, clase.PrecioUnitario, user)
                     {
-                        Inscripcion = inscripcion,
-                        ClaseDeportiva = clase
-                    });
-                dbContext.Inscripciones.Add(inscripcion);
-                await dbContext.SaveChangesAsync();
+                        CompeticionesInscritas = new List<CompeticionInscrita>(),
+                        ClasesInscritas = new List<ClaseInscrita>()
+                    };
+                    inscripcion.ClasesInscritas.Add(
+                        new ClaseInscrita(clase.IdClaseDeportiva, 0, "Sin observaciones", 1, clase.PrecioUnitario)
+                        {
+                            Inscripcion = inscripcion,
+                            ClaseDeportiva = clase
+                        });
+                    dbContext.Inscripciones.Add(inscripcion);
+                    await dbContext.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException($"Error al crear inscripción de clase: {ex.Message}");
+                }
             }
         }
     }
